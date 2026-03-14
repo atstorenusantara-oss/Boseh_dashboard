@@ -92,6 +92,16 @@ def init_db():
             )
         ''')
 
+        # Create api_credentials table
+        db.execute('''
+            CREATE TABLE IF NOT EXISTS api_credentials (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                base_url TEXT NOT NULL,
+                client_id TEXT NOT NULL,
+                client_secret TEXT NOT NULL
+            )
+        ''')
+
         # Seed initial data for 5 slots if empty
         cursor = db.execute('SELECT COUNT(*) FROM slots')
         if cursor.fetchone()[0] == 0:
@@ -111,6 +121,15 @@ def init_db():
             cursor = db.execute('SELECT COUNT(*) FROM settings WHERE key = ?', (key,))
             if cursor.fetchone()[0] == 0:
                 db.execute('INSERT INTO settings (key, value) VALUES (?, ?)', (key, value))
+        
+        # Seed initial api credentials if they don't exist
+        cursor = db.execute('SELECT COUNT(*) FROM api_credentials')
+        if cursor.fetchone()[0] == 0:
+            db.execute('''
+                INSERT INTO api_credentials (base_url, client_id, client_secret) 
+                VALUES (?, ?, ?)
+            ''', ('https://boseh.uptangkutan-bandung.id', 'station-0001', '5U3n6f4GEA6H2mrO'))
+
         db.commit()
 
 # Initialize DB on start
