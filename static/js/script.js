@@ -37,7 +37,7 @@ async function refreshSlots() {
         data.slots.forEach(slot => {
             html += `
                 <div class="slot">
-                    <span class="slot-number">${slot.slot_number}</span>
+                    <span class="slot-number">${slot.slot_number}${(slot.has_bike && slot.bike_status) ? ` <span style="color: #666; font-size: 0.8em; font-weight: normal;">(${slot.bike_status})</span>` : ''}</span>
                     <div class="bike-placeholder">
                         ${slot.has_bike ? `<img src="/static/img/bike.png" alt="Bike" class="bike-img">` : ''}
                     </div>

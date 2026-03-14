@@ -6,6 +6,7 @@ import json
 import threading
 import paho.mqtt.client as mqtt
 from flask import Flask, render_template, request, redirect, url_for, send_file, Response
+import api_client_station
 
 app = Flask(__name__)
 DATABASE = 'boseh.db'
@@ -79,10 +80,17 @@ def init_db():
                 slot_number INTEGER UNIQUE,
                 has_bike BOOLEAN NOT NULL DEFAULT 1,
                 rfid_tag TEXT,
+                bike_status TEXT,
                 is_detected BOOLEAN DEFAULT 0,
                 last_update TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
         ''')
+        
+        # Migrations for slots
+        try:
+            db.execute("ALTER TABLE slots ADD COLUMN bike_status TEXT")
+        except sqlite3.OperationalError:
+            pass
         
         # Create settings table
         db.execute('''
@@ -98,9 +106,16 @@ def init_db():
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 base_url TEXT NOT NULL,
                 client_id TEXT NOT NULL,
-                client_secret TEXT NOT NULL
+                client_secret TEXT NOT NULL,
+                token TEXT
             )
         ''')
+
+        # Attempt to add token column to existing table to support schema migration
+        try:
+            db.execute("ALTER TABLE api_credentials ADD COLUMN token TEXT")
+        except sqlite3.OperationalError:
+            pass
 
         # Seed initial data for 5 slots if empty
         cursor = db.execute('SELECT COUNT(*) FROM slots')
@@ -113,8 +128,7 @@ def init_db():
             ("running_text", "Selamat datang di Station Boseh Dago! Silakan scan QR untuk menyewa sepeda."),
             ("station_name", "Station Dago"),
             ("station_address", "Jl. Ir. H. Juanda No.262"),
-            ("total_slots", "5"),
-            ("station_id", "DAG-262-001")
+            ("total_slots", "5")
         ]
         
         for key, value in settings_to_seed:
@@ -135,6 +149,10 @@ def init_db():
 # Initialize DB on start
 init_db()
 
+# Run API sync in background when app starts via external module
+api_sync_thread = threading.Thread(target=api_client_station.sync_station_data_from_api, daemon=True)
+api_sync_thread.start()
+
 @app.route('/')
 def index():
     db = get_db()
@@ -150,7 +168,9 @@ def admin():
     slots = db.execute('SELECT * FROM slots ORDER BY slot_number').fetchall()
     settings = db.execute('SELECT * FROM settings').fetchall()
     settings_dict = {s['key']: s['value'] for s in settings}
-    return render_template('admin.html', slots=slots, settings=settings_dict)
+    api_creds_row = db.execute('SELECT * FROM api_credentials LIMIT 1').fetchone()
+    api_creds = dict(api_creds_row) if api_creds_row else {'client_id': '', 'client_secret': ''}
+    return render_template('admin.html', slots=slots, settings=settings_dict, api_creds=api_creds)
 
 @app.route('/toggle_slot/<int:slot_id>')
 def toggle_slot(slot_id):
@@ -165,7 +185,7 @@ def toggle_slot(slot_id):
 def update_settings():
     global last_update_time
     db = get_db()
-    setting_keys = ['running_text', 'station_name', 'station_address', 'total_slots', 'station_id']
+    setting_keys = ['running_text', 'station_name', 'station_address', 'total_slots']
     for key in setting_keys:
         if key in request.form:
             value = request.form.get(key)
@@ -184,6 +204,22 @@ def update_settings():
                     # Remove extra slots
                     db.execute('DELETE FROM slots WHERE slot_number > ?', (new_total,))
     
+    # Update API Credentials
+    client_id = request.form.get('client_id')
+    client_secret = request.form.get('client_secret')
+    if client_id is not None and client_secret is not None:
+        count = db.execute('SELECT COUNT(*) FROM api_credentials').fetchone()[0]
+        if count > 0:
+            db.execute('UPDATE api_credentials SET client_id = ?, client_secret = ?', (client_id, client_secret))
+        else:
+            db.execute('INSERT INTO api_credentials (base_url, client_id, client_secret) VALUES (?, ?, ?)', ('https://boseh.devserver.my.id', client_id, client_secret))
+        # Trigger an API sync when credentials change to immediately test mapping
+        # We must commit first so the sync script (which uses its own connection) reads the new credentials.
+        db.commit()
+        
+        # Run sync synchronously so the webpage waits for the new data before reloading
+        api_client_station.sync_station_data_from_api()
+
     db.commit()
     last_update_time = time.time() # Signal update
     return redirect(url_for('admin'))
@@ -238,8 +274,8 @@ def iot_update():
 @app.route('/qrcode')
 def get_qrcode():
     db = get_db()
-    station_id = db.execute('SELECT value FROM settings WHERE key = "station_id"').fetchone()
-    qr_text = station_id['value'] if station_id else "Boseh"
+    client = db.execute('SELECT client_id FROM api_credentials LIMIT 1').fetchone()
+    qr_text = client['client_id'] if client else "Boseh"
     
     qr = qrcode.QRCode(version=1, box_size=10, border=1)
     qr.add_data(qr_text)

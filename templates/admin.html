@@ -154,9 +154,16 @@
                     <input type="text" name="station_address" value="{{ settings.station_address }}" placeholder="Alamat lengkap stasiun">
                 </div>
 
+
+
                 <div>
-                    <label style="display: block; font-weight: 700; margin-bottom: 0.5rem; color: #555; font-size: 0.9rem;">ID Stasiun (Untuk QR Code)</label>
-                    <input type="text" name="station_id" value="{{ settings.station_id }}" placeholder="ID unik stasiun">
+                    <label style="display: block; font-weight: 700; margin-bottom: 0.5rem; color: #555; font-size: 0.9rem;">Client ID (Stasiun)</label>
+                    <input type="text" name="client_id" value="{{ api_creds.client_id }}" placeholder="Contoh: station-0001">
+                </div>
+
+                <div>
+                    <label style="display: block; font-weight: 700; margin-bottom: 0.5rem; color: #555; font-size: 0.9rem;">Client Secret (Kunci API)</label>
+                    <input type="text" name="client_secret" value="{{ api_creds.client_secret }}" placeholder="Masukkan kunci rahasia API">
                 </div>
 
                 <div>

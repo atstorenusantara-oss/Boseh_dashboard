@@ -39,7 +39,7 @@
                     <div class="docking-slots">
                         {% for slot in slots %}
                         <div class="slot">
-                            <span class="slot-number">{{ slot.slot_number }}</span>
+                            <span class="slot-number">{{ slot.slot_number }}{% if slot.has_bike and slot.bike_status %} <span style="color: #666; font-size: 0.8em; font-weight: normal;">({{ slot.bike_status }})</span>{% endif %}</span>
                             <div class="bike-placeholder">
                                 {% if slot.has_bike %}
                                 <img src="{{ url_for('static', filename='img/bike.png') }}" alt="Bike" class="bike-img">
