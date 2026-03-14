@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boseh Dashboard - Station Dago</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Outfit:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Header Section -->
+        <header class="header">
+            <div class="logo-area">
+                <img src="{{ url_for('static', filename='img/dishub_logo.png') }}" alt="DISHUB Logo" class="dishub-logo">
+                <div class="links">
+                    <a href="#">none</a>
+                    <a href="#">config</a>
+                </div>
+            </div>
+            
+            <div class="station-info">
+                <h1>{{ settings.station_name }}</h1>
+                <p>{{ settings.station_address }}</p>
+            </div>
+
+            <div class="clock-card">
+                <div id="clock" class="clock-time">18:48:16</div>
+                <div id="date" class="clock-date">Kamis, 8 Mei 2025</div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="shelter-section">
+                <h2 class="shelter-title">Shelter Boseh</h2>
+                
+                <div class="bike-docking-area">
+                    <div class="docking-slots">
+                        {% for slot in slots %}
+                        <div class="slot">
+                            <span class="slot-number">{{ slot.slot_number }}</span>
+                            <div class="bike-placeholder">
+                                {% if slot.has_bike %}
+                                <img src="{{ url_for('static', filename='img/bike.png') }}" alt="Bike" class="bike-img">
+                                {% endif %}
+                            </div>
+                            {% if slot.has_bike and slot.rfid_tag %}
+                            <div class="rfid-display">{{ slot.rfid_tag }}</div>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Kiosk Section -->
+            <aside class="kiosk-aside">
+                <div class="kiosk-tower">
+                    <div class="tower-roof"></div>
+                    <div class="tower-body">
+                        <div class="server-status">
+                            <span class="status-light"></span>
+                            <span class="status-label">Server</span>
+                        </div>
+                        
+                        <div class="kiosk-button">
+                            <div class="icon-circle">
+                                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="18.5" cy="17.5" r="3.5"></circle>
+                                    <circle cx="5.5" cy="17.5" r="3.5"></circle>
+                                    <circle cx="15" cy="5" r="1"></circle>
+                                    <path d="M12 17.5V14l-3-3 4-3 2 3h2"></path>
+                                </svg>
+                            </div>
+                        </div>
+                        
+                        <h3 class="boseh-text">Boseh</h3>
+                    </div>
+                    
+                    <div class="qr-container">
+                        <img src="{{ url_for('get_qrcode') }}" alt="QR Code" class="qr-img">
+                    </div>
+                </div>
+            </aside>
+        </main>
+
+        <footer class="footer">
+            <button class="info-btn">Info</button>
+            <div class="info-text">
+                <div class="marquee">{{ settings.running_text }}</div>
+            </div>
+        </footer>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,391 @@
+:root {
+    --primary-blue: #00AEEF;
+    --dark-blue: #0056b3;
+    --light-blue: #E1F5FE;
+    --glass-bg: rgba(255, 255, 255, 0.8);
+    --accent-yellow: #FFD700;
+    --gray-bg: #f5f7fa;
+    --text-dark: #333;
+    --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+}
+
+.iot-online { color: #4ade80; }
+.iot-offline { color: #f87171; }
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #fff;
+    background-image: 
+        linear-gradient(rgba(0, 174, 239, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 174, 239, 0.05) 1px, transparent 1px);
+    background-size: 40px 40px;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--text-dark);
+}
+
+.dashboard-container {
+    width: 95vw;
+    height: 90vh;
+    background: var(--glass-bg);
+    backdrop-filter: blur(8px);
+    border-radius: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    box-shadow: var(--shadow);
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* Header */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 2rem;
+}
+
+.logo-area {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.dishub-logo {
+    height: 80px;
+    object-fit: contain;
+}
+
+.links {
+    display: flex;
+    gap: 1rem;
+    margin-left: 0.5rem;
+}
+
+.links a {
+    text-decoration: none;
+    color: #666;
+    font-size: 0.8rem;
+    font-weight: 600;
+    transition: color 0.3s;
+}
+
+.links a:hover {
+    color: var(--primary-blue);
+}
+
+.station-info {
+    text-align: center;
+}
+
+.station-info h1 {
+    font-family: 'Outfit', sans-serif;
+    color: var(--primary-blue);
+    font-size: 2.5rem;
+    font-weight: 800;
+    text-transform: capitalize;
+}
+
+.station-info p {
+    color: #00cca3; /* Match the tealish color in image */
+    font-weight: 600;
+    font-size: 1.2rem;
+}
+
+.clock-card {
+    background: var(--primary-blue);
+    color: white;
+    padding: 1.5rem 2rem;
+    border-radius: 0 0 0 40px;
+    text-align: right;
+    min-width: 250px;
+    margin-top: -2rem;
+    margin-right: -2rem;
+    box-shadow: 0 4px 15px rgba(0, 174, 239, 0.3);
+}
+
+.clock-time {
+    font-size: 2.5rem;
+    font-weight: 800;
+    line-height: 1;
+}
+
+.clock-date {
+    font-size: 0.9rem;
+    opacity: 0.9;
+    margin-top: 0.5rem;
+}
+
+/* Main Content */
+.main-content {
+    flex: 1;
+    display: flex;
+    gap: 2rem;
+    align-items: flex-start; /* Ensure top alignment */
+}
+
+.shelter-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.shelter-title {
+    color: var(--primary-blue);
+    font-family: 'Outfit', sans-serif;
+    font-size: 2rem;
+    margin-bottom: 2rem;
+}
+
+.bike-docking-area {
+    background: #e0e0e0;
+    border-radius: 20px;
+    padding: 1.5rem;
+    box-shadow: inset 0 5px 15px rgba(0,0,0,0.1);
+    position: relative;
+    overflow-y: auto;
+    max-height: 500px;
+}
+
+.docking-slots {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 1rem;
+    min-height: 200px;
+    background: white;
+    border-radius: 10px;
+    padding: 1.5rem;
+}
+
+.slot {
+    width: calc(16.66% - 1rem); /* 6 per row on large screen */
+    min-width: 100px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    margin-bottom: 1rem;
+}
+
+.slot-number {
+    font-weight: 800;
+    font-size: 1.5rem;
+    color: var(--primary-blue);
+    margin-bottom: 0.5rem;
+}
+
+.rfid-display {
+    font-size: 0.7rem;
+    font-family: monospace;
+    color: #444;
+    background: #e2e8f0;
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-top: 5px;
+    font-weight: 700;
+    white-space: nowrap;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.bike-placeholder {
+    width: 100%;
+    height: 120px;
+    background: var(--primary-blue);
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    overflow: hidden;
+}
+
+.bike-img {
+    max-width: 100%;
+    height: auto;
+    filter: drop-shadow(0 5px 5px rgba(0,0,0,0.2));
+}
+
+/* Kiosk Aside */
+.kiosk-aside {
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+    padding-top: 4rem; /* Match the shelter section top padding/spacing from title */
+}
+
+.kiosk-tower {
+    position: relative;
+    height: 450px;
+}
+
+.tower-roof {
+    height: 20px;
+    background: #a0aec0;
+    transform: skewX(-20deg);
+    width: 220px;
+    margin-left: 10px;
+    border-radius: 4px;
+}
+
+.tower-body {
+    background: var(--primary-blue);
+    width: 200px;
+    height: 100%;
+    margin-top: -5px;
+    border-radius: 0 0 10px 10px;
+    padding: 2rem 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    box-shadow: 10px 0 20px rgba(0,0,0,0.1);
+}
+
+.server-status {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+}
+
+.status-light {
+    width: 12px;
+    height: 12px;
+    background: #4ade80;
+    border-radius: 50%;
+    box-shadow: 0 0 10px #4ade80;
+    animation: blink 2s infinite;
+}
+
+.status-label {
+    color: white;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+.kiosk-button {
+    background: white;
+    width: 100px;
+    height: 100px;
+    border-radius: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    margin-bottom: 1.5rem;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.kiosk-button:hover {
+    transform: scale(1.05);
+}
+
+.icon-circle {
+    color: var(--primary-blue);
+}
+
+.boseh-text {
+    color: white;
+    font-weight: 800;
+    font-size: 1.8rem;
+    letter-spacing: 1px;
+}
+
+.qr-container {
+    position: absolute;
+    right: -20px;
+    top: 50px;
+    background: white;
+    padding: 1rem;
+    border-radius: 12px;
+    box-shadow: 5px 5px 15px rgba(0,0,0,0.1);
+    width: 150px;
+    height: 150px;
+}
+
+.qr-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+/* Footer */
+.footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 2rem;
+}
+
+.info-btn {
+    background: var(--primary-blue);
+    color: white;
+    border: none;
+    padding: 0.8rem 2rem;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 1.2rem;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0, 174, 239, 0.3);
+}
+
+.info-text {
+    flex: 1;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #444;
+    overflow: hidden;
+    white-space: nowrap;
+    margin-left: 20px;
+}
+
+.marquee {
+    display: inline-block;
+    padding-left: 100%;
+    animation: marquee 20s linear infinite;
+}
+
+@keyframes marquee {
+    0% { transform: translate(0, 0); }
+    100% { transform: translate(-100%, 0); }
+}
+
+/* Responsive Scaling */
+@media (max-width: 1024px) {
+    .dashboard-container { height: auto; padding: 1rem; width: 98vw; }
+    .main-content { flex-direction: column; }
+    .kiosk-aside { width: 100%; align-items: center; }
+}
+
+@media (max-width: 600px) {
+    .header { flex-direction: column; align-items: center; gap: 1.5rem; text-align: center; }
+    .clock-card { border-radius: 20px; width: 100%; margin: 0; text-align: center; }
+    .station-info h1 { font-size: 1.8rem; }
+    .docking-slots { grid-template-columns: repeat(2, 1fr); display: grid; height: auto; gap: 0.5rem; }
+    .slot { height: 180px; }
+    .footer { flex-direction: column; gap: 1rem; }
+    .info-text { margin-left: 0; width: 100%; text-align: center; }
+}
+
+@media (max-height: 800px) and (min-width: 1025px) {
+    .docking-slots { height: 200px; }
+    .kiosk-tower { height: 300px; }
+    .tower-body { padding: 1rem; }
+}
