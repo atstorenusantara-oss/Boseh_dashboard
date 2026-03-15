@@ -62,6 +62,52 @@ source.addEventListener('refresh', function(event) {
     refreshSlots();
 });
 
+// Listen for rent requests from remote API broker
+source.addEventListener('rent_request', function(event) {
+    console.log('Rent request received:', event.data);
+    try {
+        const payload = JSON.parse(event.data);
+        showRentPopup(payload);
+        // Refresh slots immediately just in case the backend also synced
+        refreshSlots();
+    } catch (e) {
+        console.error("Error parsing rent_request:", e);
+    }
+});
+
+let rentPopupTimeout;
+
+function showRentPopup(rentData) {
+    const modal = document.getElementById('rentModal');
+    if (!modal) return;
+    
+    // Normalize escaped path if it exists
+    let photoUrl = rentData.customer?.photo || '';
+    photoUrl = photoUrl.replace(/\\\//g, '/'); // Remove JSON escape slashes
+    
+    document.getElementById('rentCustPhoto').src = photoUrl;
+    document.getElementById('rentCustName').value = rentData.customer?.name || '';
+    document.getElementById('rentBikeId').value = rentData.bike?.bike_id || '';
+    document.getElementById('rentDocking').value = rentData.bike?.docking_id || '';
+    
+    modal.style.display = 'flex';
+    
+    // Clear any existing timeout
+    if (rentPopupTimeout) {
+        clearTimeout(rentPopupTimeout);
+    }
+    
+    // Automatically close after 5 seconds
+    rentPopupTimeout = setTimeout(() => {
+        modal.style.display = 'none';
+    }, 5000);
+}
+
+// Basic document interaction (dom ready)
+document.addEventListener('DOMContentLoaded', () => {
+    // Other DOM interactions can go here
+});
+
 // General error handling for SSE
 source.onerror = function(err) {
     console.warn('EventSource connection lost. Attempting to reconnect...');

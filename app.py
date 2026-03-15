@@ -7,6 +7,7 @@ import threading
 import paho.mqtt.client as mqtt
 from flask import Flask, render_template, request, redirect, url_for, send_file, Response
 import api_client_station
+import mqtt_client_remote
 
 app = Flask(__name__)
 DATABASE = 'boseh.db'
@@ -18,6 +19,8 @@ MQTT_TOPIC = "boseh/stasiun/update"
 
 # Simple broadcast mechanism
 last_update_time = time.time()
+latest_event = None
+latest_event_time = time.time()
 
 # ---------------------------------------------------------
 # MQTT CLIENT OVERVIEW
@@ -153,6 +156,43 @@ init_db()
 api_sync_thread = threading.Thread(target=api_client_station.sync_station_data_from_api, daemon=True)
 api_sync_thread.start()
 
+def handle_remote_rental(data):
+    """Callback function when a dock open (rent) request arrives from remote API MQTT."""
+    global last_update_time, latest_event_time, latest_event
+    latest_event = {"type": "rent_request", "data": data}
+    latest_event_time = time.time()
+    last_update_time = time.time()
+
+    def update_status_after_delay():
+        time.sleep(5)
+        with app.app_context():
+            db = get_db()
+            docking_id = data.get('bike', {}).get('docking_id')
+            if docking_id is not None:
+                db.execute("UPDATE slots SET bike_status = 'Silahkan ambil sepeda' WHERE slot_number = ?", (docking_id,))
+                db.commit()
+            
+            global last_update_time
+            last_update_time = time.time()
+            
+        # Reset back to ready after 1 minute (60 seconds)
+        time.sleep(60)
+        with app.app_context():
+            db = get_db()
+            if docking_id is not None:
+                # Optional: You may want to check if the status is STILL 'Silahkan ambil sepeda'
+                # before setting it to 'ready', just in case someone manually removed the bike.
+                db.execute("UPDATE slots SET bike_status = 'ready' WHERE slot_number = ? AND bike_status = 'Silahkan ambil sepeda'", (docking_id,))
+                db.commit()
+            
+            last_update_time = time.time()
+
+    threading.Thread(target=update_status_after_delay, daemon=True).start()
+
+# Run External API MQTT client
+remote_mqtt_thread = threading.Thread(target=mqtt_client_remote.start_mqtt_client, args=(handle_remote_rental,), daemon=True)
+remote_mqtt_thread.start()
+
 @app.route('/')
 def index():
     db = get_db()
@@ -235,11 +275,17 @@ def api_slots():
 @app.route('/stream')
 def stream():
     def event_stream():
-        global last_update_time
+        global last_update_time, latest_event_time, latest_event
         local_last_update = last_update_time
+        local_event_time = latest_event_time
         while True:
-            # Check for actual update
-            if local_last_update < last_update_time:
+            # Check for generic events like rent requests first
+            if local_event_time < latest_event_time:
+                local_event_time = latest_event_time
+                if latest_event:
+                    yield f"event: {latest_event['type']}\ndata: {json.dumps(latest_event['data'])}\n\n"
+            # Else check for standard refresh signals
+            elif local_last_update < last_update_time:
                 local_last_update = last_update_time
                 yield "event: refresh\ndata: update\n\n"
             else:

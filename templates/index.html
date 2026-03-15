@@ -6,6 +6,49 @@
     <title>Boseh Dashboard - Station Dago</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Outfit:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+        .modal-content {
+            background: #fff;
+            padding: 30px;
+            border-radius: 15px;
+            width: 350px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            color: #333;
+        }
+        .modal-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .form-group {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .form-group label {
+            color: #888;
+            font-size: 0.95em;
+            width: 90px;
+        }
+        .form-group input {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            color: #555;
+            background-color: #fcfcfc;
+            width: 100%;
+        }
+    </style>
 </head>
 <body>
     <div class="dashboard-container">
@@ -91,6 +134,31 @@
                 <div class="marquee">{{ settings.running_text }}</div>
             </div>
         </footer>
+    </div>
+
+    <!-- Rent Modal Pop-up -->
+    <div id="rentModal" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <h2 style="text-align: center; margin-bottom: 20px; font-weight: 500;">Data penyewa</h2>
+            <div style="text-align: center; margin-bottom: 25px;">
+                <img id="rentCustPhoto" src="" alt="Customer" style="width: 160px; height: 160px; object-fit: cover; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+            </div>
+            
+            <div class="modal-form">
+                <div class="form-group">
+                    <label>Name</label>
+                    <input type="text" id="rentCustName" readonly>
+                </div>
+                <div class="form-group">
+                    <label>Bike ID</label>
+                    <input type="text" id="rentBikeId" readonly>
+                </div>
+                <div class="form-group">
+                    <label>Docking</label>
+                    <input type="text" id="rentDocking" readonly>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
