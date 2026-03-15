@@ -24,8 +24,9 @@ function updateClock() {
     dateElement.textContent = `${dayName}, ${date} ${monthName} ${year}`;
 }
 
-// Initial call
+// Initial call and set interval for real-time updates
 updateClock();
+setInterval(updateClock, 1000);
 
 async function refreshSlots() {
     try {
@@ -101,6 +102,58 @@ function showRentPopup(rentData) {
     rentPopupTimeout = setTimeout(() => {
         modal.style.display = 'none';
     }, 5000);
+}
+
+// Payment UI logic
+let paymentPopupTimeout;
+
+// Listen for payment requests from remote API broker
+source.addEventListener('payment_request', function(event) {
+    console.log('Payment request received:', event.data);
+    try {
+        const payload = JSON.parse(event.data);
+        showPaymentPopup(payload);
+    } catch (e) {
+        console.error("Error parsing payment_request:", e);
+    }
+});
+
+function showPaymentPopup(paymentData) {
+    const modal = document.getElementById('paymentModal');
+    if (!modal) return;
+    
+    // Safety check objects
+    const customerName = paymentData.customer?.name || 'Unknown User';
+    const amount = paymentData.payment?.amount || 0;
+    let qrisContent = paymentData.payment?.qris_content || '';
+    
+    // Normalize escaped path if it exists
+    qrisContent = qrisContent.replace(/\\\//g, '/'); // Remove JSON escape slashes
+    
+    // Format currency to IDR
+    const formatRp = new Intl.NumberFormat('id-ID', {
+        style: 'currency',
+        currency: 'IDR',
+        minimumFractionDigits: 0
+    }).format(amount);
+
+    document.getElementById('paymentCustName').value = customerName;
+    document.getElementById('paymentAmount').value = formatRp;
+    
+    // Fetch QR Code from backend generate endpoint
+    document.getElementById('paymentQrcode').src = `/api/qris?data=${encodeURIComponent(qrisContent)}`;
+    
+    modal.style.display = 'flex';
+    
+    // Clear any existing timeout
+    if (paymentPopupTimeout) {
+        clearTimeout(paymentPopupTimeout);
+    }
+    
+    // Automatically close after 10 seconds as requested
+    paymentPopupTimeout = setTimeout(() => {
+        modal.style.display = 'none';
+    }, 10000);
 }
 
 // Basic document interaction (dom ready)

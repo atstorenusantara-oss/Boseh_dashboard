@@ -8,6 +8,7 @@ import paho.mqtt.client as mqtt
 from flask import Flask, render_template, request, redirect, url_for, send_file, Response
 import api_client_station
 import mqtt_client_remote
+import mqtt_client_payment
 
 app = Flask(__name__)
 DATABASE = 'boseh.db'
@@ -193,6 +194,17 @@ def handle_remote_rental(data):
 remote_mqtt_thread = threading.Thread(target=mqtt_client_remote.start_mqtt_client, args=(handle_remote_rental,), daemon=True)
 remote_mqtt_thread.start()
 
+def handle_payment_received(data):
+    """Callback function when a payment request arrives from remote API MQTT."""
+    global last_update_time, latest_event_time, latest_event
+    latest_event = {"type": "payment_request", "data": data}
+    latest_event_time = time.time()
+    last_update_time = time.time()
+
+# Run External Payment MQTT client
+remote_mqtt_payment_thread = threading.Thread(target=mqtt_client_payment.start_mqtt_payment_client, args=(handle_payment_received,), daemon=True)
+remote_mqtt_payment_thread.start()
+
 @app.route('/')
 def index():
     db = get_db()
@@ -325,6 +337,19 @@ def get_qrcode():
     
     qr = qrcode.QRCode(version=1, box_size=10, border=1)
     qr.add_data(qr_text)
+    qr.make(fit=True)
+    img = qr.make_image(fill_color="black", back_color="white")
+    
+    img_io = io.BytesIO()
+    img.save(img_io, 'PNG')
+    img_io.seek(0)
+    return send_file(img_io, mimetype='image/png')
+
+@app.route('/api/qris')
+def get_qris():
+    data = request.args.get('data', 'No Data')
+    qr = qrcode.QRCode(version=1, box_size=10, border=1)
+    qr.add_data(data)
     qr.make(fit=True)
     img = qr.make_image(fill_color="black", back_color="white")
     

@@ -54,7 +54,27 @@ File ini menangani fungsi _listener_ atau pendengar. Menggunakan pustaka *Eclips
 
 ---
 
-## 4. Struktur Database yang Digunakan
+## 4. Integrasi MQTT Payment (QRIS Pop-up)
+**File Terkait**: `mqtt_client_payment.py`, `app.py` (Endpoint `/api/qris`)
+
+File ini menangani fungsi _listener_ tambahan khusus untuk mendengar permintaan pembayaran dari *remote server*. Menggunakan pustaka *Eclipse Paho-MQTT* (v2) dengan konfigurasi yang identik dengan listener Rental.
+
+### Alur Kerja Pesan Payment:
+1. `app.py` menjalankan skrip `start_mqtt_payment_client(callback)` sebagai proses latar belakang (*daemon thread*) yang paralel.
+2. Skrip terhubung ke broker yang sama, namun melakukan *Subscribe* ke topik: `station/[client_id]/payment`.
+3. Begitu aplikasi mobile pelanggan melakukan _checkout_ dan server pusat menerbitkan intsruksi tagihan QRIS ke topik ini, fungsi _callback_ `handle_payment_received()` di `app.py` akan terpicu.
+4. JSON dari MQTT yang berisi biodata kastemer dan data pembayaran tersebut ditangkap dan dikemas ke dalam *Event Streaming* dengan tipe (`payment_request`).
+5. Web browser menangkap _Event_ tersebut asinkron (menggunakan `EventSource` di `script.js`), dan memanggil fungsi `showPaymentPopup()`.
+6. Fungsi di *frontend* akan:
+   * Menampilkan **Pop-Up Modal Hijau** (Scan QRIS).
+   * Menampilkan Nama Customer serta Nominal Tagihan rupiah yang sudah di-format (contoh: Rp 5.000).
+   * Me-_request_ render gambar dari *endpoint* internal `/api/qris?data=...` dengan parameter `qris_content` dari *payload* MQTT.
+   * Menampilkan gambar QR Code pembayaran kepada _user_ di layar mandiri.
+7. Pop-up ini secara otomatis akan tertutup sendiri dalam waktu **10 detik**.
+   
+---
+
+## 5. Struktur Database yang Digunakan
 *   **`api_credentials`**
     *   `client_id`: ID station (Misal: *station-0001*). Dipakai untuk koneksi login dan Subscribe Topik MQTT, juga sumber teks pencetak *QR-Code* layanan.
     *   `client_secret`: Kata Sandi Station.
