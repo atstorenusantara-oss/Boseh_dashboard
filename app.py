@@ -5,12 +5,14 @@ import time
 import json
 import threading
 import paho.mqtt.client as mqtt
+import paho.mqtt.publish as publish
 from flask import Flask, render_template, request, redirect, url_for, send_file, Response
 from sub_programPY import api_client_station
 from sub_programPY import mqtt_client_remote
 from sub_programPY import mqtt_client_payment
 from sub_programPY import api_confirm_open
 from sub_programPY import api_return
+from sub_programPY import api_confirm_ready
 
 app = Flask(__name__)
 DATABASE = 'boseh.db'
@@ -31,11 +33,21 @@ latest_event_time = time.time()
 def on_connect(client, userdata, flags, rc):
     print(f"Connected to MQTT Broker with result code {rc}")
     client.subscribe(MQTT_TOPIC)
+    client.subscribe("boseh/ready")
 
 def on_message(client, userdata, msg):
     global last_update_time
     try:
-        data = json.loads(msg.payload.decode())
+        payload_str = msg.payload.decode()
+        data = json.loads(payload_str)
+        
+        if msg.topic == "boseh/ready":
+            bike_id = data.get('bike_id')
+            if bike_id:
+                print(f"[Local MQTT] Received Ready Trigger for Bike: {bike_id}")
+                threading.Thread(target=api_confirm_ready.confirm_ready, args=(bike_id,), daemon=True).start()
+            return
+
         slot_num = data.get('slot_number')
         tag = data.get('rfid_tag')
         status = data.get('status')
@@ -174,6 +186,20 @@ def handle_remote_rental(data):
     latest_event = {"type": "rent_request", "data": data}
     latest_event_time = time.time()
     last_update_time = time.time()
+
+    # Publish to local MQTT boseh/status for IoT/Hardware pulse
+    try:
+        slot_num = data.get('bike', {}).get('docking_id')
+        bike_id = data.get('bike', {}).get('bike_id')
+        if slot_num is not None and bike_id is not None:
+            local_payload = json.dumps({
+                "slot_number": int(slot_num),
+                "rfid_tag": str(bike_id)
+            })
+            publish.single("boseh/status", payload=local_payload, hostname=MQTT_BROKER, port=MQTT_PORT)
+            print(f"[Local MQTT] Triggered boseh/status: {local_payload}")
+    except Exception as e:
+        print(f"[Local MQTT] Error publishing: {e}")
 
     def update_status_after_delay():
         time.sleep(5)
