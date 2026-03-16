@@ -6,9 +6,9 @@ import json
 import threading
 import paho.mqtt.client as mqtt
 from flask import Flask, render_template, request, redirect, url_for, send_file, Response
-import api_client_station
-import mqtt_client_remote
-import mqtt_client_payment
+from sub_programPY import api_client_station
+from sub_programPY import mqtt_client_remote
+from sub_programPY import mqtt_client_payment
 
 app = Flask(__name__)
 DATABASE = 'boseh.db'
@@ -16,7 +16,7 @@ DATABASE = 'boseh.db'
 # MQTT Constants
 MQTT_BROKER = "localhost" # Menggunakan Mosquitto Lokal
 MQTT_PORT = 1883
-MQTT_TOPIC = "boseh/stasiun/update"
+MQTT_TOPIC = "boseh/stasiun/confirm_open"
 
 # Simple broadcast mechanism
 last_update_time = time.time()

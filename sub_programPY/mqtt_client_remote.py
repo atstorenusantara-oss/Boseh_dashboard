@@ -3,8 +3,10 @@ import paho.mqtt.client as mqtt
 import time
 import json
 import uuid
+import os
 
-DATABASE = 'boseh.db'
+base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+DATABASE = os.path.join(base_dir, 'boseh.db')
 
 def get_mqtt_credentials():
     conn = sqlite3.connect(DATABASE)

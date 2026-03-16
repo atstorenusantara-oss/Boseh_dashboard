@@ -9,7 +9,7 @@ Sistem telah dikonfigurasi menggunakan **Mosquitto MQTT Broker** (Lokal).
 ### Parameter Koneksi
 - **Broker IP:** `[Alamat_IP_Laptop_Anda]` (Gunakan `ipconfig` di CMD untuk melihatnya)
 - **Port:** `1883`
-- **Topic:** `boseh/stasiun/update`
+- **Topic:** `boseh/stasiun/confirm_open`
 - **QoS:** `0` atau `1`
 
 ### Format Data (JSON Payload)
@@ -58,7 +58,7 @@ void sendRfidUpdate(int slot, String rfid, bool isPresent) {
                    ",\"rfid_tag\":\"" + rfid + 
                    "\",\"status\":" + (isPresent ? "true" : "false") + "}";
                    
-  client.publish("boseh/stasiun/update", payload.c_str());
+  client.publish("boseh/stasiun/confirm_open", payload.c_str());
 }
 
 void loop() {

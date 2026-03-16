@@ -5,7 +5,7 @@ import time
 # Konfigurasi MQTT (Harus sama dengan di app.py)
 MQTT_BROKER = "localhost"
 MQTT_PORT = 1883
-MQTT_TOPIC = "boseh/stasiun/update"
+MQTT_TOPIC = "boseh/stasiun/confirm_open"
 
 def simulate_mqtt_publish(slot_number, rfid_tag, status):
     client = mqtt.Client()
@@ -32,7 +32,7 @@ if __name__ == "__main__":
     print("--- Simulasi IoT Boseh via MQTT ---")
     
     # Simulasi: Kartu Terdeteksi di Slot 3
-    simulate_mqtt_publish(8, "RFID-MQTT-777", False)
+    simulate_mqtt_publish(8, "RFID-MQTT-777", True)
     
     # Tunggu sebentar
     time.sleep(2)

@@ -5,7 +5,7 @@ import os
 import uuid
 
 # Automatically use the boseh.db in the parent directory
-base_dir = os.path.dirname(os.path.abspath(__file__))
+base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATABASE = os.path.join(base_dir, 'boseh.db')
 
 def get_mqtt_credentials():
