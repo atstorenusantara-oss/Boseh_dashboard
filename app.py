@@ -9,6 +9,8 @@ from flask import Flask, render_template, request, redirect, url_for, send_file,
 from sub_programPY import api_client_station
 from sub_programPY import mqtt_client_remote
 from sub_programPY import mqtt_client_payment
+from sub_programPY import api_confirm_open
+from sub_programPY import api_return
 
 app = Flask(__name__)
 DATABASE = 'boseh.db'
@@ -39,6 +41,15 @@ def on_message(client, userdata, msg):
         status = data.get('status')
         
         if slot_num is not None:
+            # Pengecekan status untuk eksekusi API Eksternal
+            if tag and tag.lower() != "null":
+                if status is False:
+                    # Sepeda diangkat -> Confirm Open
+                    threading.Thread(target=api_confirm_open.confirm_open, args=(tag,), daemon=True).start()
+                elif status is True:
+                    # Sepeda disimpan -> Return Bike
+                    threading.Thread(target=api_return.return_bike, args=(tag, slot_num), daemon=True).start()
+
             # We use a context manager to ensure DB is updated
             with app.app_context():
                 db = get_db()
@@ -271,7 +282,7 @@ def update_settings():
         
         # Run sync synchronously so the webpage waits for the new data before reloading
         api_client_station.sync_station_data_from_api()
-
+    
     db.commit()
     last_update_time = time.time() # Signal update
     return redirect(url_for('admin'))

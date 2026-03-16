@@ -24,9 +24,26 @@ QR Code digenerate secara otomatis berdasarkan **ID Stasiun** yang diatur di dat
 - **URL Gambar:** `/qrcode`
 - **Method:** `GET`
 - **Format:** Image (PNG)
-- **Logika:** Mengambil nilai `station_id` dari tabel `settings` dan mengubahnya menjadi QR Code secara real-time.
+- **Logika:** Mengambil nilai `station_id` dari tabel `api_credentials` dan mengubahnya menjadi QR Code secara real-time.
 
-## 4. Endpoint Pengaturan (Internal)
+---
+
+## 4. Struktur Backend & Otomatisasi
+Proyek telah diperbarui dengan pemisahan modul di folder `sub_programPY/` untuk efisiensi dan skalabilitas.
+
+### Modul Utama (`sub_programPY/`)
+- `api_client_station.py`: Sinkronisasi data stasiun dari API Pusat.
+- `mqtt_client_remote.py`: Menangani perintah pembukaan dock jarak jauh (Rent). **Dinamis**: Otomatis reconnect jika URL/Client ID berubah.
+- `mqtt_client_payment.py`: Mendeteksi notifikasi pembayaran masuk. **Dinamis**: Otomatis reconnect jika URL/Client ID berubah.
+- `api_confirm_open.py`: Memverifikasi pembukaan dock ke API Pusat (Triggered by Local MQTT).
+- `api_return.py`: Melakukan proses pengembalian sepeda ke API Pusat (Triggered by Local MQTT).
+
+### Fitur Dynamic Reconnection
+Modul MQTT Remote dan Payment dikonfigurasi untuk terus memantau database. Jika user mengubah Client ID atau Token melalui halaman `/admin`, modul ini akan mendeteksi perubahan tersebut dan melakukan koneksi ulang ke broker tanpa perlu mematikan aplikasi server.
+
+---
+
+## 5. Endpoint Pengaturan (Internal)
 
 Digunakan oleh formulir di halaman Admin untuk memperbarui konfigurasi.
 

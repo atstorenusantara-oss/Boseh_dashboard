@@ -27,11 +27,23 @@ Kirimkan pesan ke topic di atas dengan format berikut:
 | :--- | :--- | :--- |
 | `slot_number` | Int | Nomor fisik slot (1, 2, 3, dst). |
 | `rfid_tag` | String | ID Unik kartu RFID. Masukkan `null` jika kartu tidak ada. |
-| `status` | Bool | `true` jika kartu menempel (Attached), `false` jika dilepas. |
+| `status` | Bool | **True**: Sepeda dikembalikan (Trigger API Return). <br> **False**: Sepeda diambil/lepas (Trigger API Confirm Open). |
+
+### Logika Otomatisasi (Server-Side)
+Saat server menerima payload di atas, sistem akan otomatis meneruskan data ke API Pusat Boseh jika `rfid_tag` tersedia:
+1. **Status `false`**: Memanggil `sub_programPY/api_confirm_open.py`.
+2. **Status `true`**: Memanggil `sub_programPY/api_return.py`.
 
 ---
 
-## 2. Contoh Kode (Arduino/ESP32)
+## 2. Struktur Proyek (Python)
+Untuk menjaga kerapihan, sub-modul komunikasi dipisahkan ke folder:
+- **`sub_programPY/`**: Berisi script inti (`api_client_station.py`, `mqtt_client_payment.py`, dll).
+- **`testing/`**: Berisi script untuk pengujian fitur baru.
+
+---
+
+## 3. Contoh Kode (Arduino/ESP32)
 
 Pastikan Anda sudah menginstal library **PubSubClient** di Arduino IDE.
 
