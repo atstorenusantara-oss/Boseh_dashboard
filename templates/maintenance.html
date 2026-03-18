@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maintenance - Boseh Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Outfit:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        .maintenance-container {
+            width: 95vw;
+            height: 90vh;
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+            padding: 2.5rem;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .maint-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid rgba(0, 174, 239, 0.1);
+            padding-bottom: 1.5rem;
+        }
+
+        .maint-title {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .maint-title h1 {
+            font-family: 'Outfit', sans-serif;
+            color: var(--primary-blue);
+            font-size: 2.2rem;
+            font-weight: 800;
+        }
+
+        .maint-icon {
+            background: var(--primary-blue);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 8px 15px rgba(0, 174, 239, 0.3);
+        }
+
+        .back-btn {
+            background: #f1f5f9;
+            color: #64748b;
+            text-decoration: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 12px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+
+        .back-btn:hover {
+            background: #e2e8f0;
+            color: #334155;
+            transform: translateX(-5px);
+        }
+
+        .table-wrapper {
+            flex: 1;
+            overflow-y: auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.05);
+            padding: 1rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 10px;
+        }
+
+        th {
+            text-align: left;
+            padding: 1rem;
+            color: #94a3b8;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+        }
+
+        td {
+            padding: 1.2rem 1rem;
+            background: #f8fafc;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        tr td:first-child { border-radius: 12px 0 0 12px; }
+        tr td:last-child { border-radius: 0 12px 12px 0; }
+
+        tr:hover td {
+            background: #f1f5f9;
+            transform: scale(1.002);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+        }
+
+        .device-badge {
+            background: #e0f2fe;
+            color: #0369a1;
+            padding: 5px 12px;
+            border-radius: 8px;
+            font-weight: 800;
+            font-size: 1.1rem;
+        }
+
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .status-online { background: #dcfce7; color: #15803d; }
+        .status-offline { background: #fee2e2; color: #b91c1c; }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .dot-online { background: #22c55e; box-shadow: 0 0 8px #22c55e; }
+        .dot-offline { background: #ef4444; }
+
+        .ip-text {
+            color: #475569;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 500;
+        }
+
+        .rfid-val {
+            color: #1e293b;
+            font-weight: 600;
+            background: #f1f5f9;
+            padding: 4px 10px;
+            border-radius: 6px;
+            border: 1px solid #e2e8f0;
+        }
+
+        /* Toggle Switch */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 32px;
+        }
+
+        .switch input { 
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #cbd5e1;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 24px;
+            width: 24px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        input:checked + .slider {
+            background-color: #ef4444; /* Red for maintenance */
+        }
+
+        input:focus + .slider {
+            box-shadow: 0 0 1px #ef4444;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(28px);
+        }
+
+        .maint-label {
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin-left: 10px;
+            color: #ef4444;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        input:checked ~ .maint-label {
+            opacity: 1;
+        }
+
+        .test-btn {
+            background: var(--primary-blue);
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-right: 5px;
+        }
+
+        .test-btn:hover {
+            filter: brightness(1.1);
+            transform: scale(1.05);
+        }
+
+        .btn-red { background: #ef4444; }
+
+        .rfid-input {
+            width: 140px;
+            padding: 8px 10px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            font-family: monospace;
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: #1e293b;
+        }
+
+        .rfid-input:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(0, 174, 239, 0.1);
+        }
+
+    </style>
+</head>
+<body style="background: #f8fafc;">
+    <div class="maintenance-container">
+        <header class="maint-header">
+            <div class="maint-title">
+                <div class="maint-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg>
+                </div>
+                <h1>Device Maintenance</h1>
+            </div>
+            <div style="display: flex; gap: 10px;">
+                <button onclick="syncApi()" class="back-btn" style="background: var(--primary-blue); color: white; border: none; box-shadow: 0 4px 10px rgba(0, 174, 239, 0.3);">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+                    Sinkron Server API
+                </button>
+                <a href="/" class="back-btn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                    Dashboard Utama
+                </a>
+            </div>
+        </header>
+
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>No Device</th>
+                        <th>Koneksi</th>
+                        <th>IP Address</th>
+                        <th>Status Selenoid</th>
+                        <th>RFID Terbaca</th>
+                        <th>Tes Selenoid</th>
+                        <th>Status Maintenance</th>
+                        <th>Cek Alat</th>
+                    </tr>
+                </thead>
+                <tbody id="deviceTableBody">
+                    {% for slot in slots %}
+                    <tr>
+                        <td>
+                            <span class="device-badge">{{ slot.slot_number }}</span>
+                        </td>
+                        <td>
+                            {% if slot.is_connected %}
+                            <span class="status-pill status-online">
+                                <span class="status-dot dot-online"></span> Online
+                            </span>
+                            {% else %}
+                            <span class="status-pill status-offline">
+                                <span class="status-dot dot-offline"></span> Offline
+                            </span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <span class="ip-text">{{ slot.ip_address or "Not Assigned" }}</span>
+                        </td>
+                        <td>
+                            <span class="status-pill {{ 'status-online' if slot.solenoid_status else 'status-offline' }}">
+                                {{ 'OPEN' if slot.solenoid_status else 'LOCKED' }}
+                            </span>
+                        </td>
+                        <td>
+                            <div style="display: flex; gap: 5px; align-items: center;">
+                                <input type="text" class="rfid-input" value="{{ slot.rfid_tag or '' }}" placeholder="ID RFID" id="rfid_{{ slot.id }}">
+                                <button class="test-btn save-rfid-btn" data-id="{{ slot.id }}">✔</button>
+                            </div>
+                        </td>
+                        <td>
+                            <button class="test-btn solenoid-btn" data-id="{{ slot.id }}" data-status="true">BUKA</button>
+                            <button class="test-btn btn-red solenoid-btn" data-id="{{ slot.id }}" data-status="false">KUNCI</button>
+                        </td>
+                        <td>
+                            <div style="display: flex; align-items: center;">
+                                <label class="switch">
+                                    <input type="checkbox" class="maint-checkbox" data-id="{{ slot.id }}" {% if slot.maintenance %}checked{% endif %}>
+                                    <span class="slider"></span>
+                                </label>
+                                <span class="maint-label {% if not slot.maintenance %}maint-inactive{% endif %}">MAINTENANCE</span>
+                            </div>
+                        </td>
+                        <td>
+                            <button class="test-btn check-btn" data-id="{{ slot.id }}" style="background: #6366f1;">CEK</button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        function attachEventHandlers() {
+            document.querySelectorAll('.maint-checkbox').forEach(checkbox => {
+                checkbox.onchange = function() {
+                    const id = this.getAttribute('data-id');
+                    const status = this.checked;
+                    toggleMaint(id, status);
+                };
+            });
+
+            document.querySelectorAll('.solenoid-btn').forEach(btn => {
+                btn.onclick = function() {
+                    const id = this.getAttribute('data-id');
+                    const status = this.getAttribute('data-status') === 'true';
+                    testSolenoid(id, status, this);
+                };
+            });
+
+            document.querySelectorAll('.save-rfid-btn').forEach(btn => {
+                btn.onclick = function() {
+                    const id = this.getAttribute('data-id');
+                    saveRfid(id, this);
+                };
+            });
+
+            document.querySelectorAll('.check-btn').forEach(btn => {
+                btn.onclick = function() {
+                    const id = this.getAttribute('data-id');
+                    checkDevice(id, this);
+                };
+            });
+        }
+        function toggleMaint(id, status) {
+            fetch(`/toggle_maintenance/${id}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ maintenance: status })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Success:', data);
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+        }
+
+        function testSolenoid(id, status, btn) {
+            fetch(`/test_solenoid/${id}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ solenoid: status })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Solenoid Command:', data.message);
+                if(btn) {
+                    const originalColor = btn.style.background;
+                    btn.style.background = "#22c55e";
+                    setTimeout(() => btn.style.background = originalColor, 500);
+                }
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+        }
+
+        function saveRfid(id, btn) {
+            const input = document.getElementById(`rfid_${id}`);
+            const tag = input.value;
+            fetch(`/update_rfid/${id}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ rfid_tag: tag })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('RFID Updated:', data.status);
+                if(btn) {
+                    const originalColor = btn.style.background;
+                    btn.style.background = "#22c55e";
+                    setTimeout(() => btn.style.background = originalColor, 500);
+                }
+                // Highlight input for feedback
+                input.style.borderColor = "#22c55e";
+                setTimeout(() => input.style.borderColor = "#e2e8f0", 2000);
+            });
+        }
+
+        function syncApi() {
+            const btn = event.currentTarget;
+            const originalHtml = btn.innerHTML;
+            btn.innerHTML = "...Syncing";
+            btn.disabled = true;
+
+            fetch('/sync_now')
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+                btn.innerHTML = originalHtml;
+                btn.disabled = false;
+            });
+        }
+
+        function checkDevice(id, btn) {
+            console.log('Klik Cek Device ID:', id);
+            fetch(`/check_device/${id}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' }
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Check Command:', data.message);
+                if(data.status === 'success' && btn) {
+                    // Flash the button green for feedback
+                    const originalColor = btn.style.background;
+                    btn.style.background = "#22c55e";
+                    setTimeout(() => btn.style.background = originalColor, 1000);
+                }
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                alert("Gagal mengirim perintah cek: " + error);
+            });
+        }
+
+        // EventSource to listen for updates from Admin/IoT
+        const source = new EventSource('/stream');
+
+        // Listen for standard refresh signals
+        source.addEventListener('refresh', function(event) {
+            console.log('Refresh event received. Updating table...');
+            updateTable();
+        });
+
+        // Error handling for SSE
+        source.onerror = function(err) {
+            console.warn('EventSource connection lost. Attempting to reconnect...');
+        };
+
+        // Live update mechanism
+        function updateTable() {
+            fetch('/api/slots')
+            .then(res => res.json())
+            .then(data => {
+                const body = document.getElementById('deviceTableBody');
+                let html = '';
+                data.slots.forEach(slot => {
+                    const statusClass = slot.is_connected ? 'status-online' : 'status-offline';
+                    const solenoidClass = slot.solenoid_status ? 'status-online' : 'status-offline';
+                    const solenoidText = slot.solenoid_status ? 'OPEN' : 'LOCKED';
+                    const connectionText = slot.is_connected ? 'Online' : 'Offline';
+                    const connectionDot = slot.is_connected ? 'dot-online' : 'dot-offline';
+                    
+                    html += `
+                        <tr>
+                            <td><span class="device-badge">${slot.slot_number}</span></td>
+                            <td>
+                                <span class="status-pill ${statusClass}">
+                                    <span class="status-dot ${connectionDot}"></span> ${connectionText}
+                                </span>
+                            </td>
+                            <td><span class="ip-text">${slot.ip_address || "Not Assigned"}</span></td>
+                            <td>
+                                <span class="status-pill ${solenoidClass}">
+                                    ${solenoidText}
+                                </span>
+                            </td>
+                            <td>
+                                <div style="display: flex; gap: 5px; align-items: center;">
+                                    <input type="text" class="rfid-input" value="${slot.rfid_tag || ''}" placeholder="ID RFID" id="rfid_${slot.id}">
+                                    <button class="test-btn save-rfid-btn" data-id="${slot.id}">✔</button>
+                                </div>
+                            </td>
+                            <td>
+                                <button class="test-btn solenoid-btn" data-id="${slot.id}" data-status="true">BUKA</button>
+                                <button class="test-btn btn-red solenoid-btn" data-id="${slot.id}" data-status="false">KUNCI</button>
+                            </td>
+                            <td>
+                                <div style="display: flex; align-items: center;">
+                                    <label class="switch">
+                                        <input type="checkbox" class="maint-checkbox" data-id="${slot.id}" ${slot.maintenance ? 'checked' : ''}>
+                                        <span class="slider"></span>
+                                    </label>
+                                    <span class="maint-label ${slot.maintenance ? '' : 'maint-inactive'}">MAINTENANCE</span>
+                                </div>
+                            </td>
+                            <td>
+                                <button class="test-btn check-btn" data-id="${slot.id}" style="background: #6366f1;">CEK</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+                body.innerHTML = html;
+                
+                // Re-bind events to new elements
+                attachEventHandlers();
+            });
+        }
+
+        // Initial re-bind just in case, though the first render is from Jinja
+        attachEventHandlers();
+    </script>
+</body>
+</html>

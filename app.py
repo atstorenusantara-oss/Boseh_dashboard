@@ -23,9 +23,8 @@ MQTT_PORT = 1883
 MQTT_TOPIC = "boseh/stasiun/confirm_open"
 
 # Simple broadcast mechanism
-last_update_time = time.time()
-latest_event = None
 latest_event_time = time.time()
+last_update_time = time.time()
 
 # ---------------------------------------------------------
 # MQTT CLIENT OVERVIEW
@@ -34,6 +33,7 @@ def on_connect(client, userdata, flags, rc):
     print(f"Connected to MQTT Broker with result code {rc}")
     client.subscribe(MQTT_TOPIC)
     client.subscribe("boseh/ready")
+    client.subscribe("boseh/maintenance")
 
 def on_message(client, userdata, msg):
     global last_update_time
@@ -48,6 +48,26 @@ def on_message(client, userdata, msg):
                 threading.Thread(target=api_confirm_ready.confirm_ready, args=(bike_id,), daemon=True).start()
             return
 
+        if msg.topic == "boseh/maintenance":
+            slot_num = data.get('slot_number')
+            ip = data.get('ip_address')
+            status = data.get('status')
+            solenoid = data.get('solenoid')
+            
+            if slot_num is not None:
+                with app.app_context():
+                    db = get_db()
+                    db.execute('''
+                        UPDATE slots 
+                        SET ip_address = ?, is_connected = ?, solenoid_status = ?, last_update = CURRENT_TIMESTAMP 
+                        WHERE slot_number = ?
+                    ''', (ip, status, solenoid, slot_num))
+                    db.commit()
+                    last_update_time = time.time()
+                    print(f"Maintenance MQTT Update: Slot {slot_num} (IP: {ip}, Connected: {status}, Solenoid: {solenoid})")
+            return
+
+        # Default: handle standard bike status updates (boseh/stasiun/confirm_open or similar)
         slot_num = data.get('slot_number')
         tag = data.get('rfid_tag')
         status = data.get('status')
@@ -65,14 +85,22 @@ def on_message(client, userdata, msg):
             # We use a context manager to ensure DB is updated
             with app.app_context():
                 db = get_db()
-                db.execute('''
-                    UPDATE slots 
-                    SET rfid_tag = ?, is_detected = ?, has_bike = ?, last_update = CURRENT_TIMESTAMP 
-                    WHERE slot_number = ?
-                ''', (tag, status, status, slot_num))
+                if tag:
+                    db.execute('''
+                        UPDATE slots 
+                        SET rfid_tag = ?, is_detected = ?, has_bike = ?, last_update = CURRENT_TIMESTAMP 
+                        WHERE slot_number = ?
+                    ''', (tag, status, status, slot_num))
+                else:
+                    db.execute('''
+                        UPDATE slots 
+                        SET is_detected = ?, has_bike = ?, last_update = CURRENT_TIMESTAMP 
+                        WHERE slot_number = ?
+                    ''', (status, status, slot_num))
                 db.commit()
                 last_update_time = time.time()
                 print(f"MQTT Update: Slot {slot_num} updated via {msg.topic}")
+
     except Exception as e:
         print(f"Error processing MQTT message: {e}")
 
@@ -109,6 +137,9 @@ def init_db():
                 rfid_tag TEXT,
                 bike_status TEXT,
                 is_detected BOOLEAN DEFAULT 0,
+                maintenance BOOLEAN DEFAULT 0,
+                ip_address TEXT,
+                is_connected BOOLEAN DEFAULT 0,
                 last_update TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
         ''')
@@ -116,6 +147,26 @@ def init_db():
         # Migrations for slots
         try:
             db.execute("ALTER TABLE slots ADD COLUMN bike_status TEXT")
+        except sqlite3.OperationalError:
+            pass
+
+        try:
+            db.execute("ALTER TABLE slots ADD COLUMN maintenance BOOLEAN DEFAULT 0")
+        except sqlite3.OperationalError:
+            pass
+
+        try:
+            db.execute("ALTER TABLE slots ADD COLUMN ip_address TEXT")
+        except sqlite3.OperationalError:
+            pass
+
+        try:
+            db.execute("ALTER TABLE slots ADD COLUMN is_connected BOOLEAN DEFAULT 0")
+        except sqlite3.OperationalError:
+            pass
+
+        try:
+            db.execute("ALTER TABLE slots ADD COLUMN solenoid_status BOOLEAN DEFAULT 0")
         except sqlite3.OperationalError:
             pass
         
@@ -261,6 +312,86 @@ def admin():
     api_creds = dict(api_creds_row) if api_creds_row else {'client_id': '', 'client_secret': ''}
     return render_template('admin.html', slots=slots, settings=settings_dict, api_creds=api_creds)
 
+@app.route('/maintenance')
+def maintenance():
+    db = get_db()
+    slots = db.execute('SELECT * FROM slots ORDER BY slot_number').fetchall()
+    settings = db.execute('SELECT * FROM settings').fetchall()
+    settings_dict = {s['key']: s['value'] for s in settings}
+    return render_template('maintenance.html', slots=slots, settings=settings_dict)
+
+@app.route('/toggle_maintenance/<int:slot_id>', methods=['POST'])
+def toggle_maintenance(slot_id):
+    global last_update_time
+    data = request.json
+    status = data.get('maintenance', False)
+    db = get_db()
+    db.execute('UPDATE slots SET maintenance = ? WHERE id = ?', (status, slot_id))
+    db.commit()
+    last_update_time = time.time()
+    return {"status": "success"}
+
+@app.route('/update_device_info/<int:slot_id>', methods=['POST'])
+def update_device_info(slot_id):
+    global last_update_time
+    data = request.json
+    ip = data.get('ip_address')
+    connected = data.get('is_connected')
+    
+    db = get_db()
+    if ip is not None:
+        db.execute('UPDATE slots SET ip_address = ? WHERE id = ?', (ip, slot_id))
+    if connected is not None:
+        db.execute('UPDATE slots SET is_connected = ? WHERE id = ?', (connected, slot_id))
+    db.commit()
+    last_update_time = time.time()
+    return {"status": "success"}
+
+@app.route('/test_solenoid/<int:slot_id>', methods=['POST'])
+def test_solenoid(slot_id):
+    data = request.json
+    status = data.get('solenoid', False)
+    
+    db = get_db()
+    slot = db.execute('SELECT slot_number FROM slots WHERE id = ?', (slot_id,)).fetchone()
+    
+    if slot:
+        slot_num = slot['slot_number']
+        # Publish MQTT command to the device
+        payload = json.dumps({
+            "slot_number": slot_num,
+            "command": "solenoid",
+            "value": status
+        })
+        # Topic example: boseh/device/1/control
+        publish.single(f"boseh/device/{slot_num}/control", payload=payload, hostname=MQTT_BROKER, port=MQTT_PORT)
+        print(f"Sent Solenoid Command to Slot {slot_num}: {status}")
+        return {"status": "success", "message": f"Command sent to slot {slot_num}"}
+    
+    return {"status": "error", "message": "Slot not found"}, 404
+
+@app.route('/update_rfid/<int:slot_id>', methods=['POST'])
+def update_rfid(slot_id):
+    global last_update_time
+    data = request.json
+    rfid = data.get('rfid_tag')
+    
+    db = get_db()
+    db.execute('UPDATE slots SET rfid_tag = ? WHERE id = ?', (rfid, slot_id))
+    db.commit()
+    last_update_time = time.time()
+    return {"status": "success"}
+
+@app.route('/sync_now')
+def sync_now():
+    global last_update_time
+    try:
+        api_client_station.sync_station_data_from_api()
+        last_update_time = time.time()
+        return {"status": "success", "message": "Synchronization complete"}
+    except Exception as e:
+        return {"status": "error", "message": str(e)}, 500
+
 @app.route('/toggle_slot/<int:slot_id>')
 def toggle_slot(slot_id):
     global last_update_time
@@ -313,13 +444,59 @@ def update_settings():
     last_update_time = time.time() # Signal update
     return redirect(url_for('admin'))
 
-# API for dynamic slot updates (AJAX)
-# API for dynamic slot updates (AJAX)
 @app.route('/api/slots')
 def api_slots():
     db = get_db()
     slots = db.execute('SELECT * FROM slots ORDER BY slot_number').fetchall()
     return {"slots": [dict(s) for s in slots]}
+
+@app.route('/check_device/<int:slot_id>', methods=['POST'])
+def check_device(slot_id):
+    db = get_db()
+    slot = db.execute('SELECT slot_number, last_update FROM slots WHERE id = ?', (slot_id,)).fetchone()
+    
+    if slot:
+        slot_num = slot['slot_number']
+        initial_update = slot['last_update']
+        
+        # Publish MQTT payload {"status": true} to topic boseh/1, boseh/2...
+        topic = f"boseh/{slot_num}"
+        payload = json.dumps({"status": True})
+        publish.single(topic, payload=payload, hostname=MQTT_BROKER, port=MQTT_PORT)
+        print(f"Sent Device Check to Topic {topic}: {payload}")
+        
+        # Start a 5-second timer to check for response
+        threading.Timer(5.0, verify_device_response, [slot_id, initial_update]).start()
+        
+        return {"status": "success", "message": f"Check command sent to {topic}. Waiting 5s for response..."}
+    
+    return {"status": "error", "message": "Slot not found"}, 404
+
+def verify_device_response(slot_id, initial_update):
+    global last_update_time
+    with app.app_context():
+        db = get_db()
+        current_slot = db.execute('SELECT last_update FROM slots WHERE id = ?', (slot_id,)).fetchone()
+        
+        if current_slot:
+            # If last_update is still the same, device didn't respond
+            if current_slot['last_update'] == initial_update:
+                print(f"[Timeout] Device ID {slot_id} failed to respond in 5s. Setting Offline.")
+                db.execute('UPDATE slots SET is_connected = 0 WHERE id = ?', (slot_id,))
+                db.commit()
+                last_update_time = time.time() # Refresh UI
+            else:
+                print(f"[Response] Device ID {slot_id} responded successfully.")
+
+# Global tracker for last seen time per slot
+device_last_seen = {}
+
+def is_device_online(slot_num):
+    last_seen = device_last_seen.get(slot_num, 0)
+    return (time.time() - last_seen) < 10
+
+def update_device_seen(slot_num):
+    device_last_seen[slot_num] = time.time()
 
 @app.route('/stream')
 def stream():
