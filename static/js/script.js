@@ -181,6 +181,16 @@ function showPaymentPopup(paymentData) {
     }, 10000);
 }
 
+function toggleNavModal() {
+    const modal = document.getElementById('navModal');
+    if (!modal) return;
+    if (modal.style.display === 'none' || modal.style.display === '') {
+        modal.style.display = 'flex';
+    } else {
+        modal.style.display = 'none';
+    }
+}
+
 // Basic document interaction (dom ready)
 document.addEventListener('DOMContentLoaded', () => {
     // Other DOM interactions can go here
