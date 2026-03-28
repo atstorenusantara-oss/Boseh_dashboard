@@ -79,8 +79,30 @@ def on_message(client, userdata, msg):
                     # Sepeda diangkat -> Confirm Open
                     threading.Thread(target=api_confirm_open.confirm_open, args=(tag,), daemon=True).start()
                 elif status is True:
-                    # Sepeda disimpan -> Return Bike
+                    # 1. Sepeda disimpan -> Return Bike (Dijalankan di thread terpisah)
                     threading.Thread(target=api_return.return_bike, args=(tag, slot_num), daemon=True).start()
+                    
+                    # 2. Update status ke "Sepeda sudah masuk" dan kembalikan ke "ready" setelah 10 detik
+                    def update_return_status(s_num):
+                        # Simpan ke DB "Sepeda sudah masuk"
+                        with app.app_context():
+                            db = get_db()
+                            db.execute("UPDATE slots SET bike_status = 'Sepeda sudah masuk' WHERE slot_number = ?", (s_num,))
+                            db.commit()
+                            global last_update_time
+                            last_update_time = time.time()
+                            
+                        # Tunggu 10 detik
+                        time.sleep(10)
+                        
+                        # Set balik ke "ready"
+                        with app.app_context():
+                            db = get_db()
+                            db.execute("UPDATE slots SET bike_status = 'ready' WHERE slot_number = ?", (s_num,))
+                            db.commit()
+                            last_update_time = time.time()
+                    
+                    threading.Thread(target=update_return_status, args=(slot_num,), daemon=True).start()
 
             # We use a context manager to ensure DB is updated
             with app.app_context():
@@ -140,6 +162,7 @@ def init_db():
                 maintenance BOOLEAN DEFAULT 0,
                 ip_address TEXT,
                 is_connected BOOLEAN DEFAULT 0,
+                bike_name TEXT,
                 last_update TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
         ''')
@@ -167,6 +190,11 @@ def init_db():
 
         try:
             db.execute("ALTER TABLE slots ADD COLUMN solenoid_status BOOLEAN DEFAULT 0")
+        except sqlite3.OperationalError:
+            pass
+
+        try:
+            db.execute("ALTER TABLE slots ADD COLUMN bike_name TEXT")
         except sqlite3.OperationalError:
             pass
         
@@ -243,14 +271,20 @@ def handle_remote_rental(data):
         slot_num = data.get('bike', {}).get('docking_id')
         bike_id = data.get('bike', {}).get('bike_id')
         if slot_num is not None and bike_id is not None:
+            # 1. Provide IoT pulse to local hardware (if any)
             local_payload = json.dumps({
                 "slot_number": int(slot_num),
                 "rfid_tag": str(bike_id)
             })
             publish.single("boseh/status", payload=local_payload, hostname=MQTT_BROKER, port=MQTT_PORT)
             print(f"[Local MQTT] Triggered boseh/status: {local_payload}")
+
+            # 2. AUTOMATION: Immediately Send Confirm Ready back to Server Pusat
+            # This bypasses the need for the device hardware to send a "ready" signal.
+            print(f"[Automation] Automatically sending Confirm Ready for Bike ID: {bike_id}")
+            threading.Thread(target=api_confirm_ready.confirm_ready, args=(bike_id,), daemon=True).start()
     except Exception as e:
-        print(f"[Local MQTT] Error publishing: {e}")
+        print(f"[Local MQTT] Error publishing/automating: {e}")
 
     def update_status_after_delay():
         time.sleep(5)
@@ -444,6 +478,18 @@ def update_settings():
     last_update_time = time.time() # Signal update
     return redirect(url_for('admin'))
 
+@app.route('/update_bike_names', methods=['POST'])
+def update_bike_names():
+    global last_update_time
+    db = get_db()
+    for key, value in request.form.items():
+        if key.startswith('bike_name_'):
+            slot_id = key.split('_')[-1]
+            db.execute('UPDATE slots SET bike_name = ? WHERE id = ?', (value, slot_id))
+    db.commit()
+    last_update_time = time.time()
+    return redirect(url_for('admin'))
+
 @app.route('/api/slots')
 def api_slots():
     db = get_db()
@@ -573,4 +619,4 @@ def get_qris():
     return send_file(img_io, mimetype='image/png')
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+    app.run(host='0.0.0.0', debug=True, port=5000)

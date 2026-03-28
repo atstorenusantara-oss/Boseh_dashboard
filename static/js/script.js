@@ -52,7 +52,7 @@ async function refreshSlots() {
                             </div>
                         ` : ''}
                     </div>
-                    ${(slot.has_bike && slot.rfid_tag) ? `<div class="rfid-display">${slot.rfid_tag}</div>` : ''}
+                    ${(slot.has_bike && (slot.rfid_tag || slot.bike_name)) ? `<div class="rfid-display">${slot.bike_name ? slot.bike_name : slot.rfid_tag}</div>` : ''}
                 </div>
             `;
         });

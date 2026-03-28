@@ -97,21 +97,22 @@ def sync_station_data_from_api():
             # 4. Sync bikes to slots
             try:
                 # We optionally clear existing first to reflect exact state from server
-                conn.execute("UPDATE slots SET has_bike = 0, rfid_tag = NULL, bike_status = NULL")
+                conn.execute("UPDATE slots SET has_bike = 0, rfid_tag = NULL, bike_status = NULL, bike_name = NULL")
                 
                 bikes = data.get('bikes') or station_data.get('bikes') or []
                 if bikes:
                     for bike in bikes:
                         b_id = bike.get('bike_id')
                         b_status = bike.get('status')
+                        b_name = bike.get('name')
                         d_id = bike.get('docking_id')
                         
                         if d_id is not None:
                             conn.execute('''
                                 UPDATE slots 
-                                SET rfid_tag = ?, bike_status = ?, has_bike = 1 
+                                SET rfid_tag = ?, bike_status = ?, bike_name = ?, has_bike = 1 
                                 WHERE slot_number = ?
-                            ''', (b_id, b_status, d_id))
+                            ''', (b_id, b_status, b_name, d_id))
             except Exception as ex:
                 print(f"[API Sync] Warning while syncing bikes: {ex}")
             

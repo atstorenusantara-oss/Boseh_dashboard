@@ -8,6 +8,15 @@ Dokumen ini menjelaskan struktur URL dan fitur yang tersedia pada aplikasi Boseh
 | :--- | :--- |
 | `/` | **Dashboard Utama**: Menampilkan status stasiun, jam real-time, docking sepeda, dan running text. |
 | `/admin` | **Halaman Pengaturan**: Mengelola nama stasiun, alamat, ID stasiun, jumlah slot, dan status manual sepeda. |
+| `/maintenance` | **Halaman Maintenance**: Panel teknisi untuk cek konektivitas alat, tes solenoid, dan status sensor RFID. |
+
+## 2. Akses Jaringan (Multi-Device)
+
+Aplikasi telah dikonfigurasi untuk dapat diakses oleh perangkat lain (HP/Tablet/Laptop) dalam satu jaringan Wi-Fi yang sama.
+
+- **Host Binding:** `0.0.0.0` (Mendengarkan di semua interface jaringan).
+- **Cara Akses:** Buka browser di perangkat lain dan masukkan alamat IP PC Server: `http://[IP_ADDRESS]:5000` (Contoh: `http://192.168.0.105:5000`).
+- **Pengecekan IP:** Jalankan perintah `ipconfig` di Command Prompt untuk mengetahui IPv4 Address komputer server.
 
 ## 2. Fitur Real-Time (SSE)
 
@@ -67,4 +76,30 @@ Menampilkan status fisik setiap slot docking.
 - `has_bike`: Status ketersediaan sepeda (1/0).
 - `rfid_tag`: ID Kartu RFID unik dari IoT.
 - `is_detected`: Status deteksi sensor IoT.
+- `ip_address`: Alamat IP perangkat IoT yang terhubung.
+- `is_connected`: Status koneksi perangkat (Online/Offline).
+- `solenoid_status`: Status kunci solenoid (Terkunci/Terbuka).
 - `last_update`: Timestamp terakhir data masuk.
+
+---
+
+## 7. Panduan Instalasi & Deployment
+
+Proyek ini mendukung dua metode instalasi otomatis:
+
+### A. Instalasi Standar (Online)
+Gunakan file **`INSTALL_PC_BARU.bat`**. 
+- Membutuhkan koneksi internet untuk mendownload library Python.
+- Mengecek keberadaan Python dan Mosquitto secara otomatis.
+
+### B. Instalasi Full Offline (Tanpa Internet)
+Gunakan file **`INSTALL_OFFLINE.bat`**. 
+- Menggunakan file yang sudah tersedia di folder `offline_setup/`.
+- Berisi installer Python (.exe), Mosquitto (.exe), dan semua library (.whl).
+- Sangat direkomendasikan untuk deployment di lokasi stasiun yang minim sinyal.
+
+### Daftar Script Utilitas (`.bat`)
+- `START_BOSEH.bat`: Menjalankan Broker MQTT, Server Flask, dan membuka Chrome secara otomatis (Kiosk Mode).
+- `STOP_BOSEH.bat`: Mematikan semua proses server (Python & Mosquitto).
+- `INSTALL_OFFLINE.bat`: Script instalasi mandiri tanpa internet.
+- `run_server.bat`: Script ringan hanya untuk menjalankan python app.py.
