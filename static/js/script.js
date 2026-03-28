@@ -36,10 +36,25 @@ async function refreshSlots() {
         
         let html = '';
         data.slots.forEach(slot => {
+            // Extract countdown number if exists in bike_status (e.g. "Silahkan ambil sepeda (53s)")
+            let countdownHtml = '';
+            let displayStatus = slot.bike_status || '';
+            
+            const match = displayStatus.match(/\(([^)]+)\)/);
+            if (match && slot.has_bike) {
+                countdownHtml = `<div class="countdown-box">${match[1]}</div>`;
+                // Clean the status string for the top text display
+                displayStatus = displayStatus.replace(/\s*\([^)]+\)/, '');
+            } else if (match && !slot.has_bike) {
+                // If countdown data exists but bike is gone, just hide everything
+                displayStatus = '';
+            }
+
             html += `
                 <div class="slot">
-                    <span class="slot-number">${slot.slot_number}${(slot.has_bike && slot.bike_status) ? ` <span style="color: #666; font-size: 0.8em; font-weight: normal;">(${slot.bike_status})</span>` : ''}</span>
+                    <span class="slot-number">${slot.slot_number}${(slot.has_bike && displayStatus) ? ` <span style="color: #666; font-size: 0.8em; font-weight: normal;">(${displayStatus})</span>` : ''}</span>
                     <div class="bike-placeholder">
+                        ${countdownHtml}
                         ${slot.has_bike ? `<img src="/static/img/bike.png" alt="Bike" class="bike-img">` : ''}
                         ${slot.maintenance ? `
                             <div class="maintenance-overlay">
@@ -169,6 +184,7 @@ function showPaymentPopup(paymentData) {
 // Basic document interaction (dom ready)
 document.addEventListener('DOMContentLoaded', () => {
     // Other DOM interactions can go here
+    refreshSlots(); // Populate slots on load
 });
 
 // General error handling for SSE

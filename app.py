@@ -287,28 +287,50 @@ def handle_remote_rental(data):
         print(f"[Local MQTT] Error publishing/automating: {e}")
 
     def update_status_after_delay():
+        global last_update_time
         time.sleep(5)
+        docking_id = data.get('bike', {}).get('docking_id')
+        
         with app.app_context():
             db = get_db()
-            docking_id = data.get('bike', {}).get('docking_id')
             if docking_id is not None:
                 db.execute("UPDATE slots SET bike_status = 'Silahkan ambil sepeda' WHERE slot_number = ?", (docking_id,))
                 db.commit()
-            
-            global last_update_time
             last_update_time = time.time()
             
-        # Reset back to ready after 1 minute (60 seconds)
-        time.sleep(60)
+        # Hitung mundur (Countdown) selama 60 detik
+        for i in range(60, 0, -1):
+            with app.app_context():
+                db = get_db()
+                try:
+                    # Cek apakah sepeda masih ada di slot
+                    cursor = db.execute("SELECT has_bike FROM slots WHERE slot_number = ?", (docking_id,))
+                    row = cursor.fetchone()
+                    if not row or row['has_bike'] == 0:
+                        # Sepeda sudah diambil, hentikan hitung mundur
+                        db.execute("UPDATE slots SET bike_status = 'ready' WHERE slot_number = ?", (docking_id,))
+                        db.commit()
+                        last_update_time = time.time()
+                        break
+
+                    # Update status dengan sisa waktu
+                    db.execute("UPDATE slots SET bike_status = ? WHERE slot_number = ? AND (bike_status LIKE 'Silahkan%' OR bike_status = 'ready')", 
+                              (f"Silahkan ambil sepeda ({i}s)", docking_id))
+                    db.commit()
+                    last_update_time = time.time()
+                except:
+                    pass
+            time.sleep(1)
+
+        # Setelah 60 detik, kembalikan ke ready
         with app.app_context():
             db = get_db()
-            if docking_id is not None:
-                # Optional: You may want to check if the status is STILL 'Silahkan ambil sepeda'
-                # before setting it to 'ready', just in case someone manually removed the bike.
-                db.execute("UPDATE slots SET bike_status = 'ready' WHERE slot_number = ? AND bike_status = 'Silahkan ambil sepeda'", (docking_id,))
+            try:
+                db.execute("UPDATE slots SET bike_status = 'ready' WHERE slot_number = ? AND bike_status LIKE 'Silahkan%'", (docking_id,))
                 db.commit()
-            
-            last_update_time = time.time()
+                last_update_time = time.time()
+            except:
+                pass
 
     threading.Thread(target=update_status_after_delay, daemon=True).start()
 
