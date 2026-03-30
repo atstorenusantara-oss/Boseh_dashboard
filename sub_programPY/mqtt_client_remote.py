@@ -10,7 +10,7 @@ DATABASE = os.path.join(base_dir, 'boseh.db')
 
 def get_mqtt_credentials():
     try:
-        conn = sqlite3.connect(DATABASE)
+        conn = sqlite3.connect(DATABASE, timeout=20)
         conn.row_factory = sqlite3.Row
         cursor = conn.execute("SELECT base_url, client_id, client_secret, token FROM api_credentials LIMIT 1")
         row = cursor.fetchone()
@@ -52,6 +52,9 @@ def start_mqtt_client(rental_callback):
                 client.subscribe(topic)
             else:
                 print(f"[MQTT Remote] Failed to connect, reason_code: {reason_code}")
+                # If not authorized, signal the loop to potentially reconnect
+                if str(reason_code) == "Not authorized" or reason_code == 5 or reason_code == 135:
+                    print("[MQTT Remote] Auth failure! Suggesting account/token check.")
 
         def on_message(client, userdata, msg):
             try:

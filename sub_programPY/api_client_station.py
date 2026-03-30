@@ -9,7 +9,7 @@ DATABASE = os.path.join(base_dir, 'boseh.db')
 
 def get_api_credentials():
     try:
-        conn = sqlite3.connect(DATABASE)
+        conn = sqlite3.connect(DATABASE, timeout=20)
         conn.row_factory = sqlite3.Row
         cursor = conn.execute("SELECT base_url, client_id, client_secret FROM api_credentials LIMIT 1")
         row = cursor.fetchone()
@@ -42,7 +42,7 @@ def sync_once():
             res_json = response.json()
             station_data = res_json.get('data', {}).get('station', {})
             
-            conn = sqlite3.connect(DATABASE)
+            conn = sqlite3.connect(DATABASE, timeout=20)
             conn.row_factory = sqlite3.Row
             
             try:
@@ -55,6 +55,14 @@ def sync_once():
                 
                 for key, val in settings_updates.items():
                     conn.execute("UPDATE settings SET value = ? WHERE key = ?", (val, key))
+
+                # Update token if provided by API (Check top-level and data-level)
+                token = res_json.get('token') or res_json.get('data', {}).get('token')
+                if token:
+                    conn.execute("UPDATE api_credentials SET token = ?", (token,))
+                    print(f"[API Sync] Token updated successfully from API response.")
+                else:
+                    print(f"[API Sync] Warning: No token found in API response.")
 
                 # Clear and re-populate slots from API state
                 # Note: We clear bike_name so it can be updated from API

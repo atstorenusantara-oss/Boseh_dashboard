@@ -1,4 +1,5 @@
 import sqlite3
+import os
 import qrcode
 import io
 import time
@@ -137,13 +138,11 @@ def run_mqtt():
     except Exception as e:
         print(f"MQTT Connection Error: {e}")
 
-# Start MQTT thread
-mqtt_thread = threading.Thread(target=run_mqtt, daemon=True)
-mqtt_thread.start()
+# Threads will be started at the bottom of the file inside the main block
 # ---------------------------------------------------------
 
 def get_db():
-    conn = sqlite3.connect(DATABASE)
+    conn = sqlite3.connect(DATABASE, timeout=20)
     conn.row_factory = sqlite3.Row
     return conn
 
@@ -252,12 +251,7 @@ def init_db():
 
         db.commit()
 
-# Initialize DB on start
-init_db()
-
-# Run API sync in background when app starts via external module
-api_sync_thread = threading.Thread(target=api_client_station.sync_station_data_from_api, daemon=True)
-api_sync_thread.start()
+# Threads will be started at the bottom
 
 def handle_remote_rental(data):
     """Callback function when a dock open (rent) request arrives from remote API MQTT."""
@@ -334,9 +328,7 @@ def handle_remote_rental(data):
 
     threading.Thread(target=update_status_after_delay, daemon=True).start()
 
-# Run External API MQTT client
-remote_mqtt_thread = threading.Thread(target=mqtt_client_remote.start_mqtt_client, args=(handle_remote_rental,), daemon=True)
-remote_mqtt_thread.start()
+# Threads will be started at the bottom
 
 def handle_payment_received(data):
     """Callback function when a payment request arrives from remote API MQTT."""
@@ -345,9 +337,7 @@ def handle_payment_received(data):
     latest_event_time = time.time()
     last_update_time = time.time()
 
-# Run External Payment MQTT client
-remote_mqtt_payment_thread = threading.Thread(target=mqtt_client_payment.start_mqtt_payment_client, args=(handle_payment_received,), daemon=True)
-remote_mqtt_payment_thread.start()
+# Threads will be started at the bottom
 
 @app.route('/')
 def index():
@@ -641,4 +631,24 @@ def get_qris():
     return send_file(img_io, mimetype='image/png')
 
 if __name__ == '__main__':
+    # Initialize DB first before anything else
+    print("Initializing Database...")
+    init_db()
+
+    # Start all background threads only once (avoid double threads in Flask Debug mode)
+    if not app.debug or os.environ.get('WERKZEUG_RUN_MAIN') == 'true':
+        print("Starting background service threads...")
+        
+        # 1. Local MQTT
+        threading.Thread(target=run_mqtt, daemon=True).start()
+        
+        # 2. API Sync
+        threading.Thread(target=api_client_station.sync_station_data_from_api, daemon=True).start()
+        
+        # 3. Remote Rental MQTT
+        threading.Thread(target=mqtt_client_remote.start_mqtt_client, args=(handle_remote_rental,), daemon=True).start()
+        
+        # 4. Remote Payment MQTT
+        threading.Thread(target=mqtt_client_payment.start_mqtt_payment_client, args=(handle_payment_received,), daemon=True).start()
+
     app.run(host='0.0.0.0', debug=True, port=5000)

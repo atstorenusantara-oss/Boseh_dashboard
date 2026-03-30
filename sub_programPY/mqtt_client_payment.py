@@ -11,7 +11,7 @@ DATABASE = os.path.join(base_dir, 'boseh.db')
 
 def get_mqtt_credentials():
     try:
-        conn = sqlite3.connect(DATABASE)
+        conn = sqlite3.connect(DATABASE, timeout=20)
         conn.row_factory = sqlite3.Row
         cursor = conn.execute("SELECT base_url, client_id, client_secret, token FROM api_credentials LIMIT 1")
         row = cursor.fetchone()
@@ -42,10 +42,13 @@ def start_mqtt_payment_client(on_payment_received_callback):
         current_token = token
         
         def on_connect(client, userdata, flags, reason_code, properties=None):
-            print(f"Payment MQTT Connected with result code {reason_code}")
-            topic = f"station/{current_client_id}/payment"
-            print(f"Subscribing to payment topic: {topic}")
-            client.subscribe(topic)
+            if reason_code == 0:
+                print(f"Payment MQTT Connected successfully (Reason: {reason_code})")
+                topic = f"station/{current_client_id}/payment"
+                print(f"Subscribing to payment topic: {topic}")
+                client.subscribe(topic)
+            else:
+                print(f"Payment MQTT Failed to connect (Reason: {reason_code})")
 
         def on_message(client, userdata, msg):
             try:

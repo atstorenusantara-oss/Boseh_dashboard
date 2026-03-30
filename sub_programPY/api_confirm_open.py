@@ -7,7 +7,7 @@ DATABASE = os.path.join(base_dir, 'boseh.db')
 
 def get_api_credentials():
     try:
-        conn = sqlite3.connect(DATABASE)
+        conn = sqlite3.connect(DATABASE, timeout=20)
         conn.row_factory = sqlite3.Row
         cursor = conn.execute("SELECT base_url, token FROM api_credentials LIMIT 1")
         row = cursor.fetchone()
