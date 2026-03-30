@@ -22,10 +22,10 @@ def get_mqtt_credentials():
         pass
     return None, None, None, None
 
-def start_mqtt_client(rental_callback):
+def start_mqtt_client(message_callback):
     """
     Start the MQTT client in a blocking way. Usually run in a thread.
-    rental_callback(data: dict) will be called when a dock open message is received.
+    message_callback(topic, data) will be called when a message is received.
     """
     while True:
         base_url, client_id, client_secret, token = get_mqtt_credentials()
@@ -47,9 +47,12 @@ def start_mqtt_client(rental_callback):
         def on_connect(client, userdata, flags, reason_code, properties=None):
             if reason_code == 0:
                 print(f"[MQTT Remote] Connected successfully to API Server MQTT")
-                topic = f"station/{current_client_id}/dock/open"
-                print(f"[MQTT Remote] Subscribing to: {topic}")
-                client.subscribe(topic)
+                topics = [
+                    (f"station/{current_client_id}/dock/open", 0),
+                    (f"station/{current_client_id}/status", 0)
+                ]
+                print(f"[MQTT Remote] Subscribing to: {topics}")
+                client.subscribe(topics)
             else:
                 print(f"[MQTT Remote] Failed to connect, reason_code: {reason_code}")
                 # If not authorized, signal the loop to potentially reconnect
@@ -59,10 +62,10 @@ def start_mqtt_client(rental_callback):
         def on_message(client, userdata, msg):
             try:
                 payload = msg.payload.decode()
-                print(f"[MQTT Remote] Received rent request: {payload[:50]}...")
+                print(f"[MQTT Remote] Received MQTT Message from topic: {msg.topic}")
                 data = json.loads(payload)
-                if rental_callback:
-                    rental_callback(data)
+                if message_callback:
+                    message_callback(msg.topic, data)
             except Exception as e:
                 print(f"[MQTT Remote] Error parsing message: {e}")
 

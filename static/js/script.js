@@ -111,8 +111,19 @@ function showRentPopup(rentData) {
     let photoUrl = rentData.customer?.photo || '';
     photoUrl = photoUrl.replace(/\\\//g, '/'); // Remove JSON escape slashes
     
+    // FILTER: Only show if customer has a valid name (or not empty)
+    // To handle the user's specific request for "User" vs "Customer" roles
+    const name = rentData.customer?.name || '';
+    const role = (rentData.customer?.role || '').toLowerCase(); // Fallback to check role if exists
+    
+    // If name is empty or it's explicitly a "customer" role, we hide the popup
+    if (!name || role === 'customer') {
+        console.log("Rent request: Skipping popup for generic customer/empty name.");
+        return; 
+    }
+
     document.getElementById('rentCustPhoto').src = photoUrl;
-    document.getElementById('rentCustName').value = rentData.customer?.name || '';
+    document.getElementById('rentCustName').value = name;
     document.getElementById('rentBikeId').value = rentData.bike?.bike_id || '';
     document.getElementById('rentDocking').value = rentData.bike?.docking_id || '';
     

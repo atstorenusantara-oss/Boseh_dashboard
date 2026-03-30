@@ -94,11 +94,10 @@ def sync_once():
         print(f"[API Sync] Network Error: {e}")
 
 def sync_station_data_from_api():
-    """Background loop to periodically sync with API."""
-    print("[API Sync] Starting periodic background sync (5 mins)...")
-    while True:
-        sync_once()
-        time.sleep(300)
+    """Run synchronization once at startup."""
+    print("[API Sync] Starting one-time startup sync...")
+    sync_once()
+    print("[API Sync] Startup sync complete.")
 
 if __name__ == "__main__":
     sync_once()
