@@ -202,10 +202,41 @@ function toggleNavModal() {
     }
 }
 
+async function updateServerStatus() {
+    try {
+        const response = await fetch('/api/health');
+        const data = await response.json();
+        
+        const light = document.getElementById('serverStatusLight');
+        const label = document.getElementById('serverStatusLabel');
+        
+        if (data.status) {
+            light.classList.remove('offline');
+            label.textContent = 'Server';
+            label.style.color = 'white';
+        } else {
+            light.classList.add('offline');
+            label.textContent = data.message || 'Offline';
+            label.style.color = '#f87171';
+        }
+    } catch (err) {
+        console.error('Failed to check server health:', err);
+        const light = document.getElementById('serverStatusLight');
+        const label = document.getElementById('serverStatusLabel');
+        if (light) light.classList.add('offline');
+        if (label) {
+            label.textContent = 'Connection Error';
+            label.style.color = '#f87171';
+        }
+    }
+}
+
 // Basic document interaction (dom ready)
 document.addEventListener('DOMContentLoaded', () => {
     // Other DOM interactions can go here
     refreshSlots(); // Populate slots on load
+    updateServerStatus(); // Initial status check
+    setInterval(updateServerStatus, 15000); // Check every 15 seconds
 });
 
 // General error handling for SSE

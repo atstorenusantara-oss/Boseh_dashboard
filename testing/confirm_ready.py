@@ -41,7 +41,7 @@ def test_confirm_ready():
     # Body dalam bentuk Multipart Form (sesuai gambar)
     # bike_id diambil dari gambar: 6125734
     data = {
-        'bike_id': '6125738'
+        'bike_id': '00000009'
     }
 
     print("--- [TESTING] API Confirm Ready ---")

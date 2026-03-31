@@ -284,6 +284,11 @@ body {
     animation: blink 2s infinite;
 }
 
+.status-light.offline {
+    background: #f87171;
+    box-shadow: 0 0 10px #f87171;
+}
+
 .status-label {
     color: white;
     font-size: 0.8rem;

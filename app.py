@@ -14,6 +14,7 @@ from sub_programPY import mqtt_client_payment
 from sub_programPY import api_confirm_open
 from sub_programPY import api_return
 from sub_programPY import api_confirm_ready
+import requests
 
 app = Flask(__name__)
 DATABASE = 'boseh.db'
@@ -26,6 +27,10 @@ MQTT_TOPIC = "boseh/stasiun/confirm_open"
 # Simple broadcast mechanism
 latest_event_time = time.time()
 last_update_time = time.time()
+
+# API Health Status
+last_api_status = False
+last_api_message = "Initializing..."
 
 # ---------------------------------------------------------
 # MQTT CLIENT OVERVIEW
@@ -585,6 +590,46 @@ def is_device_online(slot_num):
 def update_device_seen(slot_num):
     device_last_seen[slot_num] = time.time()
 
+def check_api_health_loop():
+    global last_api_status, last_api_message
+    while True:
+        try:
+            db = get_db()
+            row = db.execute("SELECT base_url FROM api_credentials LIMIT 1").fetchone()
+            db.close()
+            
+            if row:
+                base_url = row['base_url']
+                # Try to ping the base URL or a known health endpoint
+                try:
+                    # Using a 5s timeout to not hang
+                    # Any response from the server indicates we have internet and server is up
+                    response = requests.get(base_url, timeout=5)
+                    last_api_status = True
+                    if response.status_code == 200:
+                        last_api_message = "Connected"
+                    else:
+                        last_api_message = f"Online ({response.status_code})"
+                except requests.exceptions.RequestException as e:
+                    last_api_status = False
+                    last_api_message = "No Connection"
+            else:
+                last_api_status = False
+                last_api_message = "Config Missing"
+        except Exception as e:
+            print(f"[Health Check] Error: {e}")
+            last_api_status = False
+            last_api_message = "System Error"
+            
+        time.sleep(30) # Check every 30 seconds
+
+@app.route('/api/health')
+def api_health():
+    return {
+        "status": last_api_status,
+        "message": last_api_message
+    }
+
 @app.route('/stream')
 def stream():
     def event_stream():
@@ -679,5 +724,8 @@ if __name__ == '__main__':
         
         # 4. Remote Payment MQTT
         threading.Thread(target=mqtt_client_payment.start_mqtt_payment_client, args=(handle_payment_received,), daemon=True).start()
+
+        # 5. API Health Check
+        threading.Thread(target=check_api_health_loop, daemon=True).start()
 
     app.run(host='0.0.0.0', debug=True, port=5000)

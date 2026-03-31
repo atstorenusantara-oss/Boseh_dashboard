@@ -38,7 +38,7 @@ def test_confirm_open():
     
     # Body dalam bentuk Multipart Form (sesuai gambar)
     data = {
-        'bike_id': '00000006'
+        'bike_id': '00000009'
     }
 
     print("--- [TESTING] API Confirm Open ---")

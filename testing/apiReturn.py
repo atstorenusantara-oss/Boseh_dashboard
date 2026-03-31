@@ -38,8 +38,8 @@ def test_return():
     
     # Body dalam bentuk Multipart Form (sesuai gambar)
     data = {
-        'bike_id': '00000006',
-        'docking_id': '10'
+        'bike_id': '00000009',
+        'docking_id': '6'
     }
 
     print("--- [TESTING] API Bike Return ---")
