@@ -15,6 +15,8 @@ from sub_programPY import api_confirm_open
 from sub_programPY import api_return
 from sub_programPY import api_confirm_ready
 import requests
+import logging
+from logging.handlers import RotatingFileHandler
 
 app = Flask(__name__)
 DATABASE = 'boseh.db'
@@ -27,6 +29,49 @@ MQTT_TOPIC = "boseh/stasiun/confirm_open"
 # Simple broadcast mechanism
 latest_event_time = time.time()
 last_update_time = time.time()
+
+# Configure Logging
+log_formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+log_file = 'boseh.log'
+
+# Rotating file handler (5MB per file, max 3 files)
+my_handler = RotatingFileHandler(log_file, mode='a', maxBytes=5*1024*1024, 
+                                 backupCount=3, encoding=None, delay=0)
+my_handler.setFormatter(log_formatter)
+my_handler.setLevel(logging.INFO)
+
+app_logger = logging.getLogger('root')
+app_logger.setLevel(logging.INFO)
+app_logger.addHandler(my_handler)
+
+# Capture standard print to log as well if needed, but better to use log_event
+def log_event(category, message, level="INFO"):
+    """Global helper to log to file, console, and database."""
+    # 1. Console & File
+    if level == "INFO":
+        app_logger.info(f"[{category}] {message}")
+        print(f"INFO: [{category}] {message}")
+    elif level == "ERROR":
+        app_logger.error(f"[{category}] {message}")
+        print(f"ERROR: [{category}] {message}")
+    elif level == "WARNING":
+        app_logger.warning(f"[{category}] {message}")
+        print(f"WARNING: [{category}] {message}")
+
+    # 2. Database (Activity Log)
+    try:
+        # We use a separate thread/connection to avoid locking the main UI
+        def record_to_db():
+            try:
+                conn = sqlite3.connect(DATABASE, timeout=10)
+                conn.execute("INSERT INTO activity_logs (category, message, level) VALUES (?, ?, ?)", 
+                             (category, str(message), level))
+                conn.commit()
+                conn.close()
+            except: pass
+        
+        threading.Thread(target=record_to_db, daemon=True).start()
+    except: pass
 
 # API Health Status
 last_api_status = False
@@ -70,7 +115,7 @@ def on_message(client, userdata, msg):
                     ''', (ip, status, solenoid, slot_num))
                     db.commit()
                     last_update_time = time.time()
-                    print(f"Maintenance MQTT Update: Slot {slot_num} (IP: {ip}, Connected: {status}, Solenoid: {solenoid})")
+                    log_event("MQTT", f"Maintenance Update: Slot {slot_num} (IP: {ip}, Connected: {status})")
             return
 
         # Default: handle standard bike status updates (boseh/stasiun/confirm_open or similar)
@@ -227,6 +272,17 @@ def init_db():
         except sqlite3.OperationalError:
             pass
 
+        # Create activity_logs table
+        db.execute('''
+            CREATE TABLE IF NOT EXISTS activity_logs (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                category TEXT,
+                message TEXT,
+                level TEXT DEFAULT 'INFO'
+            )
+        ''')
+
         # Seed initial data for 5 slots if empty
         cursor = db.execute('SELECT COUNT(*) FROM slots')
         if cursor.fetchone()[0] == 0:
@@ -264,7 +320,7 @@ def handle_remote_mqtt(topic, data):
     
     # Check if it's a rent request (dock/open)
     if topic.endswith('/dock/open'):
-        print(f"[Remote MQTT] Received Rent Request topic: {topic}")
+        log_event("MQTT-REMOTE", f"Rent request received for Slot {data.get('bike', {}).get('docking_id')}")
         latest_event = {"type": "rent_request", "data": data}
         latest_event_time = time.time()
         last_update_time = time.time()
@@ -331,7 +387,7 @@ def handle_remote_mqtt(topic, data):
 
     # Check if it's a full status update (station/[client_id]/status)
     elif topic.endswith('/status'):
-        print(f"[Remote MQTT] Received Status Sync topic: {topic}")
+        log_event("MQTT-REMOTE", "Full status sync received from server")
         try:
             with app.app_context():
                 db = get_db()
@@ -367,6 +423,7 @@ def handle_remote_mqtt(topic, data):
 def handle_payment_received(data):
     """Callback function when a payment request arrives from remote API MQTT."""
     global last_update_time, latest_event_time, latest_event
+    log_event("PAYMENT", f"Incoming payment request: IDR {data.get('payment', {}).get('amount')}")
     latest_event = {"type": "payment_request", "data": data}
     latest_event_time = time.time()
     last_update_time = time.time()
@@ -399,6 +456,10 @@ def maintenance():
     settings = db.execute('SELECT * FROM settings').fetchall()
     settings_dict = {s['key']: s['value'] for s in settings}
     return render_template('maintenance.html', slots=slots, settings=settings_dict)
+
+@app.route('/logs')
+def logs():
+    return render_template('logs.html')
 
 @app.route('/toggle_maintenance/<int:slot_id>', methods=['POST'])
 def toggle_maintenance(slot_id):
@@ -468,8 +529,10 @@ def sync_now():
     try:
         api_client_station.sync_station_data_from_api()
         last_update_time = time.time()
+        log_event("SYSTEM", "Synchronization complete from API")
         return {"status": "success", "message": "Synchronization complete"}
     except Exception as e:
+        log_event("SYSTEM", f"Sync failed: {e}", "ERROR")
         return {"status": "error", "message": str(e)}, 500
 
 @app.route('/toggle_slot/<int:slot_id>')
@@ -630,6 +693,12 @@ def api_health():
         "message": last_api_message
     }
 
+@app.route('/api/logs')
+def api_logs():
+    db = get_db()
+    logs = db.execute('SELECT * FROM activity_logs ORDER BY id DESC LIMIT 100').fetchall()
+    return {"logs": [dict(l) for l in logs]}
+
 @app.route('/stream')
 def stream():
     def event_stream():
@@ -662,6 +731,7 @@ def iot_update():
     is_detected = data.get('status') # true if attached, false if out of range
 
     if slot_number is None:
+        log_event("IOT", "Missing slot_number in update request", "ERROR")
         return {"error": "Missing slot_number"}, 400
 
     db = get_db()
@@ -672,7 +742,8 @@ def iot_update():
     ''', (rfid_tag, is_detected, is_detected, slot_number))
     db.commit()
     
-    last_update_time = time.time() # Trigger dashboard refresh
+    last_update_time = time.time()
+    log_event("IOT", f"Slot {slot_number} updated via API (RFID: {rfid_tag})")
     return {"status": "success", "message": f"Slot {slot_number} updated"}, 200
 
 @app.route('/qrcode')

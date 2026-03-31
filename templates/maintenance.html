@@ -266,6 +266,86 @@
             border-color: var(--primary-blue);
             box-shadow: 0 0 0 3px rgba(0, 174, 239, 0.1);
         }
+        
+        /* Log Viewer Styles */
+        .log-section {
+            margin-top: 2rem;
+            background: #1e293b;
+            border-radius: 20px;
+            padding: 1.5rem;
+            color: #e2e8f0;
+            display: flex;
+            flex-direction: column;
+            height: 350px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .log-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid #334155;
+            padding-bottom: 0.8rem;
+        }
+
+        .log-info h3 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.2rem;
+            color: #38bdf8;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .log-container {
+            flex: 1;
+            overflow-y: auto;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            padding-right: 10px;
+        }
+
+        .log-entry {
+            display: flex;
+            gap: 12px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            transition: background 0.2s;
+        }
+
+        .log-entry:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .log-time { color: #94a3b8; min-width: 150px; }
+        .log-cat { 
+            font-weight: 800; 
+            min-width: 80px; 
+            text-align: center;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            padding: 2px 6px;
+        }
+        
+        .cat-mqtt { background: #0369a1; color: #e0f2fe; }
+        .cat-system { background: #5b21b6; color: #ede9fe; }
+        .cat-iot { background: #92400e; color: #fef3c7; }
+        .cat-payment { background: #166534; color: #dcfce7; }
+        
+        .log-msg { color: #f1f5f9; white-space: pre-wrap; word-break: break-all; }
+        
+        .level-error .log-msg { color: #f87171; font-weight: 600; }
+        .level-warning .log-msg { color: #fbbf24; }
+        
+        /* Custom Scrollbar for Logs */
+        .log-container::-webkit-scrollbar { width: 6px; }
+        .log-container::-webkit-scrollbar-track { background: #0f172a; }
+        .log-container::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
+        .log-container::-webkit-scrollbar-thumb:hover { background: #475569; }
 
     </style>
 </head>
@@ -300,6 +380,10 @@
                 <h1>Device Maintenance</h1>
             </div>
             <div style="display: flex; gap: 10px;">
+                <a href="/logs" class="back-btn" style="background: #ef4444; color: white; border: none; box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3);">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                    History Log Debug
+                </a>
                 <button onclick="syncApi()" class="back-btn" style="background: var(--primary-blue); color: white; border: none; box-shadow: 0 4px 10px rgba(0, 174, 239, 0.3);">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
                     Sinkron Server API
@@ -583,7 +667,7 @@
             });
         }
 
-        // Initial re-bind just in case, though the first render is from Jinja
+        // Initial re-bind
         attachEventHandlers();
     </script>
 </body>
