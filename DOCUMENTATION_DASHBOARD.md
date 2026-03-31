@@ -85,21 +85,33 @@ Menampilkan status fisik setiap slot docking.
 
 ## 7. Panduan Instalasi & Deployment
 
-Proyek ini mendukung dua metode instalasi otomatis:
+Proyek ini telah dikonfigurasi untuk kemudahan deployment di lapangan dengan dua metode utama:
 
 ### A. Instalasi Standar (Online)
 Gunakan file **`INSTALL_PC_BARU.bat`**. 
 - Membutuhkan koneksi internet untuk mendownload library Python.
 - Mengecek keberadaan Python dan Mosquitto secara otomatis.
+- Cocok jika PC server terhubung ke internet saat setup pertama kali.
 
-### B. Instalasi Full Offline (Tanpa Internet)
+### B. Instalasi Full Offline (Tanpa Internet) - DIREKOMENDASIKAN
 Gunakan file **`INSTALL_OFFLINE.bat`**. 
-- Menggunakan file yang sudah tersedia di folder `offline_setup/`.
-- Berisi installer Python (.exe), Mosquitto (.exe), dan semua library (.whl).
-- Sangat direkomendasikan untuk deployment di lokasi stasiun yang minim sinyal.
+- Seluruh dependensi sudah tersedia di dalam folder `offline_setup/`.
+- **Status Dependensi**: Terverifikasi Lengkap (Termasuk Python 3.12, Mosquitto, dan semua Library .whl seperti `flask`, `requests`, `paho-mqtt`, `qrcode`, dan `pillow`).
+- Sangat direkomendasikan untuk deployment di stasiun yang tidak memiliki akses internet stabil.
+
+#### Cara Maintenance Folder Offline
+Jika Anda menambahkan library baru di `requirements.txt` dan ingin memperbarui paket offline, jalankan perintah berikut di PC yang memiliki internet:
+```bash
+pip download -r requirements.txt -d "offline_setup/libs"
+```
+Hal ini akan mendownload versi terbaru dari semua library yang dibutuhkan ke folder lokal sehingga instalasi offline tetap mutakhir.
+
+---
 
 ### Daftar Script Utilitas (`.bat`)
-- `START_BOSEH.bat`: Menjalankan Broker MQTT, Server Flask, dan membuka Chrome secara otomatis (Kiosk Mode).
-- `STOP_BOSEH.bat`: Mematikan semua proses server (Python & Mosquitto).
-- `INSTALL_OFFLINE.bat`: Script instalasi mandiri tanpa internet.
-- `run_server.bat`: Script ringan hanya untuk menjalankan python app.py.
+- `START_BOSEH.bat`: Launcher utama. Menjalankan Mosquitto, Flask Server, dan membuka Dashboard (Chrome Maximize).
+- `STOP_BOSEH.bat`: Menutup semua proses server secara bersih.
+- `INSTALL_OFFLINE.bat`: Script instalasi mandiri (Full Offline).
+- `INSTALL_PC_BARU.bat`: Script instalasi otomatis (Memerlukan Internet).
+- `run_server.bat`: Script cepat hanya untuk menjalankan server Flask tanpa launcher.
+

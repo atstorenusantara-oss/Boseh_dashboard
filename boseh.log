@@ -6418,3 +6418,15 @@
 2026-04-01 02:40:39,683 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:40:39] "GET /api/health HTTP/1.1" 200 -
 2026-04-01 02:40:54,702 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:40:54] "GET /api/health HTTP/1.1" 200 -
 2026-04-01 02:41:09,688 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:41:09] "GET /api/health HTTP/1.1" 200 -
+2026-04-01 02:41:24,697 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:41:24] "GET /api/health HTTP/1.1" 200 -
+2026-04-01 02:41:26,828 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:41:26] "GET /maintenance HTTP/1.1" 200 -
+2026-04-01 02:41:27,178 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:41:27] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2026-04-01 02:41:27,179 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:41:27] "[36mGET /static/img/dishub_logo.png HTTP/1.1[0m" 304 -
+2026-04-01 02:41:27,521 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:41:27] "GET /stream HTTP/1.1" 200 -
+2026-04-01 02:41:28,692 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:41:28] "GET /logs HTTP/1.1" 200 -
+2026-04-01 02:41:29,023 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:41:29] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2026-04-01 02:41:29,348 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:41:29] "GET /api/logs HTTP/1.1" 200 -
+2026-04-01 02:41:32,853 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:41:32] "GET /maintenance HTTP/1.1" 200 -
+2026-04-01 02:41:33,180 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:41:33] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2026-04-01 02:41:33,181 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:41:33] "[36mGET /static/img/dishub_logo.png HTTP/1.1[0m" 304 -
+2026-04-01 02:41:33,488 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:41:33] "GET /stream HTTP/1.1" 200 -
