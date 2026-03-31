@@ -320,7 +320,20 @@ def handle_remote_mqtt(topic, data):
     
     # Check if it's a rent request (dock/open)
     if topic.endswith('/dock/open'):
-        log_event("MQTT-REMOTE", f"Rent request received for Slot {data.get('bike', {}).get('docking_id')}")
+        slot_num = data.get('bike', {}).get('docking_id')
+        log_event("MQTT-REMOTE", f"Rent request received for Slot {slot_num}")
+        
+        # Enrich with local bike_name from slots table
+        try:
+            with app.app_context():
+                db = get_db()
+                slot_info = db.execute("SELECT bike_name FROM slots WHERE slot_number = ?", (slot_num,)).fetchone()
+                if slot_info and slot_info['bike_name']:
+                    if 'bike' not in data: data['bike'] = {}
+                    data['bike']['bike_name_local'] = slot_info['bike_name']
+        except Exception as e:
+            print(f"Error enriching remote data: {e}")
+
         latest_event = {"type": "rent_request", "data": data}
         latest_event_time = time.time()
         last_update_time = time.time()
@@ -356,8 +369,8 @@ def handle_remote_mqtt(topic, data):
                     db.commit()
                 last_update_time = time.time()
                 
-            # Countdown 60s
-            for i in range(60, 0, -1):
+            # Countdown 50s
+            for i in range(50, 0, -1):
                 with app.app_context():
                     db = get_db()
                     try:

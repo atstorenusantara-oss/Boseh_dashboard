@@ -124,7 +124,10 @@ function showRentPopup(rentData) {
 
     document.getElementById('rentCustPhoto').src = photoUrl;
     document.getElementById('rentCustName').value = name;
-    document.getElementById('rentBikeId').value = rentData.bike?.bike_id || '';
+    
+    // Show local bike name if available, otherwise fallback to bike_id
+    const bikeDisplay = rentData.bike?.bike_name_local || rentData.bike?.bike_id || '';
+    document.getElementById('rentBikeId').value = bikeDisplay;
     document.getElementById('rentDocking').value = rentData.bike?.docking_id || '';
     
     modal.style.display = 'flex';
