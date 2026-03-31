@@ -11,20 +11,21 @@ def get_api_credentials():
     try:
         conn = sqlite3.connect(DATABASE, timeout=20)
         conn.row_factory = sqlite3.Row
-        cursor = conn.execute("SELECT base_url, client_id, client_secret FROM api_credentials LIMIT 1")
+        cursor = conn.execute("SELECT base_url, client_id, client_secret, token FROM api_credentials LIMIT 1")
         row = cursor.fetchone()
         conn.close()
         
         if row:
-            return row['base_url'], (row['client_id'], row['client_secret'])
-        return None, None
+            return row['base_url'], (row['client_id'], row['client_secret']), row['token']
+        return None, None, None
     except Exception as e:
         print(f"[API Sync] Database error: {e}")
-        return None, None
+        return None, None, None
 
 def sync_once():
     """Perform a single synchronization with the API to update bike metadata."""
-    base_url, creds = get_api_credentials()
+    # Added old_token to unpack match get_api_credentials change
+    base_url, creds, old_token = get_api_credentials()
     if not base_url or not creds:
         print("[API Sync] API Credentials not found.")
         return
@@ -65,7 +66,6 @@ def sync_once():
                     print(f"[API Sync] Warning: No token found in API response.")
 
                 # Clear and re-populate slots from API state
-                # Note: We clear bike_name so it can be updated from API
                 conn.execute("UPDATE slots SET has_bike = 0, rfid_tag = NULL, bike_status = NULL, bike_name = NULL")
                 
                 bikes = station_data.get('bikes', [])
@@ -92,6 +92,42 @@ def sync_once():
             print(f"[API Sync] API Error {response.status_code}: {response.text[:100]}")
     except Exception as e:
         print(f"[API Sync] Network Error: {e}")
+
+def refresh_token():
+    """Refresh the API token using the refresh endpoint and update database."""
+    base_url, creds, old_token = get_api_credentials()
+    if not base_url or not old_token:
+        print("[API Refresh] Missing base_url or old_token.")
+        return
+
+    url = f"{base_url}/api/station/refresh"
+    headers = {'Authorization': f'Bearer {old_token}'}
+    
+    try:
+        response = requests.post(url, headers=headers, timeout=15)
+        if response.status_code == 200:
+            res_json = response.json()
+            # Get token from data.token based on image provided
+            new_token = res_json.get('data', {}).get('token')
+            if new_token:
+                conn = sqlite3.connect(DATABASE, timeout=10)
+                conn.execute("UPDATE api_credentials SET token = ?", (new_token,))
+                conn.commit()
+                conn.close()
+                print(f"[API Refresh] Token refreshed successfully.")
+            else:
+                print(f"[API Refresh] Warning: No new token in refresh response.")
+        else:
+            print(f"[API Refresh] Failed! Status: {response.status_code}")
+    except Exception as e:
+        print(f"[API Refresh] Error: {e}")
+
+def api_token_refresh_loop():
+    """Loop to refresh token every 5 minutes (300 seconds)."""
+    print("[API Refresh] Starting refresh loop (300s interval)...")
+    while True:
+        time.sleep(300)
+        refresh_token()
 
 def sync_station_data_from_api():
     """Run synchronization once at startup."""

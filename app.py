@@ -799,4 +799,7 @@ if __name__ == '__main__':
         # 5. API Health Check
         threading.Thread(target=check_api_health_loop, daemon=True).start()
 
+        # 6. Automatic Token Refresh (Every 5 Minutes)
+        threading.Thread(target=api_client_station.api_token_refresh_loop, daemon=True).start()
+
     app.run(host='0.0.0.0', debug=True, port=5000)
