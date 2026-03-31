@@ -5885,3 +5885,536 @@
 2026-04-01 02:16:47,568 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:16:47] "GET /api/slots HTTP/1.1" 200 -
 2026-04-01 02:16:48,229 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:16:48] "GET /api/slots HTTP/1.1" 200 -
 2026-04-01 02:16:48,541 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:16:48] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:16:49,525 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:16:49] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:16:50,225 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:16:50] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:16:51,310 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:16:51] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:16:51,628 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:16:51] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:16:52,222 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:16:52] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:16:52,718 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:16:52] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:16:53,189 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:16:53] "GET /api/health HTTP/1.1" 200 -
+2026-04-01 02:16:53,239 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:16:53] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:16:53,546 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:16:53] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:16:55,232 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:16:55] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:16:55,546 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:16:55] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:16:56,235 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:16:56] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:16:56,547 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:16:56] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:16:57,229 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:16:57] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:16:57,546 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:16:57] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:16:58,234 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:16:58] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:16:58,686 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:16:58] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:16:59,232 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:16:59] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:16:59,542 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:16:59] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:17:00,532 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:17:00] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:17:01,233 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:17:01] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:17:01,544 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:17:01] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:17:02,271 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:17:02] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:17:03,226 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:17:03] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:17:03,839 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:17:03] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:17:04,237 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:17:04] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:17:04,545 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:17:04] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:17:05,532 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:17:05] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:17:06,232 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:17:06] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:17:06,542 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:17:06] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:17:07,788 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:17:07] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:17:08,182 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:17:08] "GET /api/health HTTP/1.1" 200 -
+2026-04-01 02:17:08,232 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:17:08] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:17:08,540 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:17:08] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:17:10,245 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:17:10] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:17:10,616 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:17:10] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:17:11,242 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:17:11] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:17:11,555 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:17:11] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:17:12,245 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:17:12] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:17:12,550 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:17:12] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:17:13,540 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:17:13] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:17:14,244 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:17:14] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:17:17,784 - root - INFO - [MQTT-REMOTE] Full status sync received from server
+2026-04-01 02:17:17,814 - root - INFO - [MQTT-REMOTE] Full status sync received from server
+2026-04-01 02:17:18,539 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:17:18] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:17:19,240 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:17:19] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:17:23,178 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:17:23] "GET /api/health HTTP/1.1" 200 -
+2026-04-01 02:17:38,179 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:17:38] "GET /api/health HTTP/1.1" 200 -
+2026-04-01 02:17:41,826 - root - INFO - [MQTT-REMOTE] Rent request received for Slot 11
+2026-04-01 02:17:41,861 - root - INFO - [MQTT-REMOTE] Rent request received for Slot 11
+2026-04-01 02:17:42,564 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:17:42] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:17:43,544 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:17:43] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:17:43,858 - root - INFO - [MQTT-REMOTE] Full status sync received from server
+2026-04-01 02:17:44,092 - root - INFO - [MQTT-REMOTE] Full status sync received from server
+2026-04-01 02:17:44,277 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:17:44] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:17:45,053 - root - INFO - [MQTT-REMOTE] Full status sync received from server
+2026-04-01 02:17:45,087 - root - INFO - [MQTT-REMOTE] Full status sync received from server
+2026-04-01 02:17:45,639 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:17:45] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:17:45,949 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:17:45] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:17:46,267 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:17:46] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:17:46,582 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:17:46] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:17:49,559 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:17:49] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:17:50,256 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:17:50] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:17:50,568 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:17:50] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:17:51,258 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:17:51] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:17:51,573 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:17:51] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:17:52,595 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:17:52] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:17:53,186 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:17:53] "GET /api/health HTTP/1.1" 200 -
+2026-04-01 02:17:53,266 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:17:53] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:17:53,668 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:17:53] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:17:54,265 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:17:54] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:17:54,577 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:17:54] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:17:55,266 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:17:55] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:17:55,580 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:17:55] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:17:56,269 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:17:56] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:17:56,579 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:17:56] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:17:57,268 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:17:57] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:17:57,578 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:17:57] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:17:59,340 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:17:59] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:17:59,655 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:17:59] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:18:00,263 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:18:00] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:18:00,581 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:18:00] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:18:01,267 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:18:01] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:18:01,581 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:18:01] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:18:03,064 - root - INFO - [MQTT-REMOTE] Full status sync received from server
+2026-04-01 02:18:03,108 - root - INFO - [MQTT-REMOTE] Full status sync received from server
+2026-04-01 02:18:03,227 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:18:03] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:18:03,545 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:18:03] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:18:03,856 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:18:03] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:18:04,262 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:18:04] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:18:04,575 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:18:04] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:18:08,183 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:18:08] "GET /api/health HTTP/1.1" 200 -
+2026-04-01 02:18:23,191 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:18:23] "GET /api/health HTTP/1.1" 200 -
+2026-04-01 02:18:37,277 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:18:37] "GET /maintenance HTTP/1.1" 200 -
+2026-04-01 02:18:37,609 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:18:37] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2026-04-01 02:18:37,610 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:18:37] "[36mGET /static/img/dishub_logo.png HTTP/1.1[0m" 304 -
+2026-04-01 02:18:37,951 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:18:37] "GET /stream HTTP/1.1" 200 -
+2026-04-01 02:18:40,830 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:18:40] "GET /admin HTTP/1.1" 200 -
+2026-04-01 02:18:41,155 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:18:41] "[36mGET /static/img/dishub_logo.png HTTP/1.1[0m" 304 -
+2026-04-01 02:18:41,155 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:18:41] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2026-04-01 02:18:46,673 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:18:46] "[32mPOST /update_settings HTTP/1.1[0m" 302 -
+2026-04-01 02:18:46,986 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:18:46] "GET /admin HTTP/1.1" 200 -
+2026-04-01 02:18:47,301 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:18:47] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2026-04-01 02:18:47,317 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:18:47] "[36mGET /static/img/dishub_logo.png HTTP/1.1[0m" 304 -
+2026-04-01 02:18:47,317 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:18:47] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:18:49,984 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:18:49] "GET / HTTP/1.1" 200 -
+2026-04-01 02:18:50,313 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:18:50] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2026-04-01 02:18:50,313 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:18:50] "[36mGET /static/img/dishub_logo.png HTTP/1.1[0m" 304 -
+2026-04-01 02:18:50,315 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:18:50] "[36mGET /static/img/bike.png HTTP/1.1[0m" 304 -
+2026-04-01 02:18:50,623 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:18:50] "[36mGET /static/js/script.js HTTP/1.1[0m" 304 -
+2026-04-01 02:18:50,627 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:18:50] "GET /qrcode HTTP/1.1" 200 -
+2026-04-01 02:18:50,933 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:18:50] "GET /stream HTTP/1.1" 200 -
+2026-04-01 02:18:50,934 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:18:50] "GET /api/health HTTP/1.1" 200 -
+2026-04-01 02:18:50,936 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:18:50] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:19:05,943 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:19:05] "GET /api/health HTTP/1.1" 200 -
+2026-04-01 02:19:11,687 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:19:11] "GET /maintenance HTTP/1.1" 200 -
+2026-04-01 02:19:12,015 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:19:12] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2026-04-01 02:19:12,016 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:19:12] "[36mGET /static/img/dishub_logo.png HTTP/1.1[0m" 304 -
+2026-04-01 02:19:12,339 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:19:12] "GET /stream HTTP/1.1" 200 -
+2026-04-01 02:19:17,305 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:19:17] "POST /check_device/3 HTTP/1.1" 200 -
+2026-04-01 02:19:17,614 - root - INFO - [MQTT] Maintenance Update: Slot 3 (IP: 192.168.0.170, Connected: True)
+2026-04-01 02:19:17,716 - root - INFO - [MQTT] Maintenance Update: Slot 3 (IP: 192.168.0.170, Connected: True)
+2026-04-01 02:19:18,320 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:19:18] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:19:18,662 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:19:18] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:19:19,698 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:19:19] "POST /toggle_maintenance/3 HTTP/1.1" 200 -
+2026-04-01 02:19:20,316 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:19:20] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:19:20,659 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:19:20] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:19:21,040 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:19:21] "POST /toggle_maintenance/3 HTTP/1.1" 200 -
+2026-04-01 02:19:21,656 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:19:21] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:19:23,992 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:19:23] "POST /test_solenoid/3 HTTP/1.1" 200 -
+2026-04-01 02:19:24,304 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:19:24] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:19:27,182 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:19:27] "POST /test_solenoid/3 HTTP/1.1" 200 -
+2026-04-01 02:19:37,432 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:19:37] "GET / HTTP/1.1" 200 -
+2026-04-01 02:19:37,758 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:19:37] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2026-04-01 02:19:37,759 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:19:37] "[36mGET /static/js/script.js HTTP/1.1[0m" 304 -
+2026-04-01 02:19:38,065 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:19:38] "GET /stream HTTP/1.1" 200 -
+2026-04-01 02:19:38,067 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:19:38] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:19:38,377 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:19:38] "GET /api/health HTTP/1.1" 200 -
+2026-04-01 02:19:38,691 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:19:38] "[36mGET /static/img/dishub_logo.png HTTP/1.1[0m" 304 -
+2026-04-01 02:19:39,003 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:19:39] "[36mGET /static/img/bike.png HTTP/1.1[0m" 304 -
+2026-04-01 02:19:39,319 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:19:39] "GET /qrcode HTTP/1.1" 200 -
+2026-04-01 02:19:51,319 - root - INFO - [MQTT-REMOTE] Full status sync received from server
+2026-04-01 02:19:51,353 - root - INFO - [MQTT-REMOTE] Full status sync received from server
+2026-04-01 02:19:51,527 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:19:51] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:19:51,842 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:19:51] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:19:52,342 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:19:52] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:19:52,657 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:19:52] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:19:53,086 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:19:53] "GET /api/health HTTP/1.1" 200 -
+2026-04-01 02:20:00,054 - root - INFO - [PAYMENT] Incoming payment request: IDR 5000
+2026-04-01 02:20:00,080 - root - INFO - [PAYMENT] Incoming payment request: IDR 5000
+2026-04-01 02:20:00,398 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:20:00] "GET /api/qris?data=https://boseh.devserver.my.id/api/customer/transaction/set-paid/655 HTTP/1.1" 200 -
+2026-04-01 02:20:01,389 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:20:01] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:20:02,338 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:20:02] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:20:08,085 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:20:08] "GET /api/health HTTP/1.1" 200 -
+2026-04-01 02:20:23,092 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:20:23] "GET /api/health HTTP/1.1" 200 -
+2026-04-01 02:20:38,080 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:20:38] "GET /api/health HTTP/1.1" 200 -
+2026-04-01 02:20:53,092 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:20:53] "GET /api/health HTTP/1.1" 200 -
+2026-04-01 02:21:08,100 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:21:08] "GET /api/health HTTP/1.1" 200 -
+2026-04-01 02:21:08,101 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:21:08] "GET / HTTP/1.1" 200 -
+2026-04-01 02:21:08,442 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:21:08] "GET /static/css/style.css HTTP/1.1" 200 -
+2026-04-01 02:21:08,442 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:21:08] "GET /static/img/bike.png HTTP/1.1" 200 -
+2026-04-01 02:21:08,444 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:21:08] "GET /static/img/dishub_logo.png HTTP/1.1" 200 -
+2026-04-01 02:21:08,444 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:21:08] "GET /static/js/script.js HTTP/1.1" 200 -
+2026-04-01 02:21:08,451 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:21:08] "GET /qrcode HTTP/1.1" 200 -
+2026-04-01 02:21:08,770 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:21:08] "GET /stream HTTP/1.1" 200 -
+2026-04-01 02:21:08,772 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:21:08] "GET /api/health HTTP/1.1" 200 -
+2026-04-01 02:21:08,773 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:21:08] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:21:08,869 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:21:08] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2026-04-01 02:21:09,084 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:21:09] "[36mGET /static/img/bike.png HTTP/1.1[0m" 304 -
+2026-04-01 02:21:23,771 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:21:23] "GET /api/health HTTP/1.1" 200 -
+2026-04-01 02:21:38,772 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:21:38] "GET /api/health HTTP/1.1" 200 -
+2026-04-01 02:21:43,950 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:21:43] "GET / HTTP/1.1" 200 -
+2026-04-01 02:21:44,296 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:21:44] "GET /static/img/dishub_logo.png HTTP/1.1" 200 -
+2026-04-01 02:21:44,296 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:21:44] "GET /static/css/style.css HTTP/1.1" 200 -
+2026-04-01 02:21:44,302 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:21:44] "GET /qrcode HTTP/1.1" 200 -
+2026-04-01 02:21:44,303 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:21:44] "GET /static/js/script.js HTTP/1.1" 200 -
+2026-04-01 02:21:44,303 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:21:44] "GET /static/img/bike.png HTTP/1.1" 200 -
+2026-04-01 02:21:44,636 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:21:44] "GET /stream HTTP/1.1" 200 -
+2026-04-01 02:21:44,639 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:21:44] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:21:44,639 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:21:44] "GET /api/health HTTP/1.1" 200 -
+2026-04-01 02:21:44,713 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:21:44] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2026-04-01 02:21:44,946 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:21:44] "[36mGET /static/img/bike.png HTTP/1.1[0m" 304 -
+2026-04-01 02:21:59,627 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:21:59] "GET /api/health HTTP/1.1" 200 -
+2026-04-01 02:22:06,295 - root - INFO - [MQTT-REMOTE] Rent request received for Slot 3
+2026-04-01 02:22:06,323 - root - INFO - [MQTT-REMOTE] Rent request received for Slot 3
+2026-04-01 02:22:06,961 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:22:06] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:22:07,959 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:22:07] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:22:08,333 - root - INFO - [MQTT-REMOTE] Full status sync received from server
+2026-04-01 02:22:08,538 - root - INFO - [MQTT-REMOTE] Full status sync received from server
+2026-04-01 02:22:09,292 - root - INFO - [MQTT-REMOTE] Full status sync received from server
+2026-04-01 02:22:09,520 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:22:09] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:22:09,721 - root - INFO - [MQTT-REMOTE] Full status sync received from server
+2026-04-01 02:22:10,409 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:22:10] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:22:10,970 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:22:10] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:22:13,967 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:22:13] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:22:14,420 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:22:14] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:22:14,636 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:22:14] "GET /api/health HTTP/1.1" 200 -
+2026-04-01 02:22:14,966 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:22:14] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:22:15,415 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:22:15] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:22:15,962 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:22:15] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:22:16,415 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:22:16] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:22:16,966 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:22:16] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:22:17,415 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:22:17] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:22:17,970 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:22:17] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:22:18,420 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:22:18] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:22:18,973 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:22:18] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:22:19,423 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:22:19] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:22:20,293 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:22:20] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:22:20,973 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:22:20] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:22:21,422 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:22:21] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:22:21,969 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:22:21] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:22:22,423 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:22:22] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:22:22,968 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:22:22] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:22:23,421 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:22:23] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:22:23,967 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:22:23] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:22:24,417 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:22:24] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:22:24,967 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:22:24] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:22:25,417 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:22:25] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:22:25,969 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:22:25] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:22:26,420 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:22:26] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:22:27,426 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:22:27] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:22:27,968 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:22:27] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:22:28,420 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:22:28] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:22:28,968 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:22:28] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:22:29,624 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:22:29] "GET /api/health HTTP/1.1" 200 -
+2026-04-01 02:22:30,382 - root - INFO - [MQTT-REMOTE] Full status sync received from server
+2026-04-01 02:22:30,413 - root - INFO - [MQTT-REMOTE] Full status sync received from server
+2026-04-01 02:22:30,981 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:22:30] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:22:31,419 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:22:31] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:22:44,629 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:22:44] "GET /api/health HTTP/1.1" 200 -
+2026-04-01 02:22:51,440 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:22:51] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:22:51,842 - root - INFO - [MQTT-REMOTE] Full status sync received from server
+2026-04-01 02:22:51,879 - root - INFO - [MQTT-REMOTE] Full status sync received from server
+2026-04-01 02:22:52,074 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:22:52] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:22:52,729 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:22:52] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:22:53,041 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:22:53] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:22:53,429 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:22:53] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:22:53,983 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:22:53] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:22:59,629 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:22:59] "GET /api/health HTTP/1.1" 200 -
+2026-04-01 02:23:01,998 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:23:01] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:23:02,435 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:23:02] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:23:02,983 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:23:02] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:23:03,436 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:23:03] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:23:09,507 - root - INFO - [PAYMENT] Incoming payment request: IDR 5000
+2026-04-01 02:23:09,539 - root - INFO - [PAYMENT] Incoming payment request: IDR 5000
+2026-04-01 02:23:10,005 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:23:10] "GET /api/qris?data=https://boseh.devserver.my.id/api/customer/transaction/set-paid/656 HTTP/1.1" 200 -
+2026-04-01 02:23:10,994 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:23:10] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:23:12,305 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:23:12] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:23:12,617 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:23:12] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:23:13,005 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:23:13] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:23:13,443 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:23:13] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:23:14,636 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:23:14] "GET /api/health HTTP/1.1" 200 -
+2026-04-01 02:23:22,457 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:23:22] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:23:23,008 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:23:23] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:23:23,448 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:23:23] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:23:29,628 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:23:29] "GET /api/health HTTP/1.1" 200 -
+2026-04-01 02:23:44,638 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:23:44] "GET /api/health HTTP/1.1" 200 -
+2026-04-01 02:23:59,631 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:23:59] "GET /api/health HTTP/1.1" 200 -
+2026-04-01 02:24:00,683 - root - INFO - [MQTT-REMOTE] Rent request received for Slot 5
+2026-04-01 02:24:00,722 - root - INFO - [MQTT-REMOTE] Rent request received for Slot 5
+2026-04-01 02:24:02,032 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:24:02] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:24:02,484 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:24:02] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:24:02,718 - root - INFO - [MQTT-REMOTE] Full status sync received from server
+2026-04-01 02:24:02,921 - root - INFO - [MQTT-REMOTE] Full status sync received from server
+2026-04-01 02:24:03,693 - root - INFO - [MQTT-REMOTE] Full status sync received from server
+2026-04-01 02:24:03,894 - root - INFO - [MQTT-REMOTE] Full status sync received from server
+2026-04-01 02:24:04,016 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:24:04] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:24:04,341 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:24:04] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:24:04,657 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:24:04] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:24:05,033 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:24:05] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:24:08,479 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:24:08] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:24:09,027 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:24:09] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:24:09,480 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:24:09] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:24:10,507 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:24:10] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:24:11,026 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:24:11] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:24:11,477 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:24:11] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:24:12,484 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:24:12] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:24:13,027 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:24:13] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:24:13,477 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:24:13] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:24:14,028 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:24:14] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:24:14,482 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:24:14] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:24:14,636 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:24:14] "GET /api/health HTTP/1.1" 200 -
+2026-04-01 02:24:15,027 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:24:15] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:24:15,484 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:24:15] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:24:16,028 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:24:16] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:24:17,026 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:24:17] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:24:17,490 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:24:17] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:24:18,039 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:24:18] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:24:18,477 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:24:18] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:24:19,039 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:24:19] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:24:19,568 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:24:19] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:24:20,036 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:24:20] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:24:20,490 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:24:20] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:24:22,035 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:24:22] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:24:22,487 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:24:22] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:24:23,486 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:24:23] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:24:24,035 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:24:24] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:24:24,485 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:24:24] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:24:25,033 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:24:25] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:24:25,480 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:24:25] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:24:26,157 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:24:26] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:24:26,488 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:24:26] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:24:27,035 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:24:27] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:24:28,045 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:24:28] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:24:28,496 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:24:28] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:24:29,043 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:24:29] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:24:29,494 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:24:29] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:24:29,634 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:24:29] "GET /api/health HTTP/1.1" 200 -
+2026-04-01 02:24:30,494 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:24:30] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:24:31,041 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:24:31] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:24:32,041 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:24:32] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:24:32,491 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:24:32] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:24:33,041 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:24:33] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:24:33,495 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:24:33] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:24:34,039 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:24:34] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:24:34,693 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:24:34] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:24:35,042 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:24:35] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:24:35,493 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:24:35] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:24:36,496 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:24:36] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:24:37,115 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:24:37] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:24:37,495 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:24:37] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:24:38,043 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:24:38] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:24:39,048 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:24:39] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:24:39,748 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:24:39] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:24:40,501 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:24:40] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:24:41,630 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:24:41] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:24:42,052 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:24:42] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:24:42,490 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:24:42] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:24:43,052 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:24:43] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:24:43,504 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:24:43] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:24:44,498 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:24:44] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:24:44,636 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:24:44] "GET /api/health HTTP/1.1" 200 -
+2026-04-01 02:24:45,047 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:24:45] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:24:45,493 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:24:45] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:24:46,043 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:24:46] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:24:46,494 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:24:46] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:24:47,323 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:24:47] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:24:48,049 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:24:48] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:24:48,508 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:24:48] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:24:49,048 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:24:49] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:24:49,505 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:24:49] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:24:50,051 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:24:50] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:24:50,960 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:24:50] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:24:51,510 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:24:51] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:24:52,864 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:24:52] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:24:53,505 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:24:53] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:24:54,053 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:24:54] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:24:54,502 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:24:54] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:24:55,052 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:24:55] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:24:55,499 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:24:55] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:24:56,743 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:24:56] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:24:57,070 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:24:57] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:24:57,512 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:24:57] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:24:58,508 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:24:58] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:24:59,052 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:24:59] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:24:59,627 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:24:59] "GET /api/health HTTP/1.1" 200 -
+2026-04-01 02:25:03,749 - root - INFO - [MQTT-REMOTE] Full status sync received from server
+2026-04-01 02:25:03,786 - root - INFO - [MQTT-REMOTE] Full status sync received from server
+2026-04-01 02:25:04,512 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:25:04] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:25:05,067 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:25:05] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:25:14,638 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:25:14] "GET /api/health HTTP/1.1" 200 -
+2026-04-01 02:25:29,636 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:25:29] "GET /api/health HTTP/1.1" 200 -
+2026-04-01 02:25:44,635 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:25:44] "GET /api/health HTTP/1.1" 200 -
+2026-04-01 02:25:59,638 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:25:59] "GET /api/health HTTP/1.1" 200 -
+2026-04-01 02:26:14,627 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:26:14] "GET /api/health HTTP/1.1" 200 -
+2026-04-01 02:26:24,922 - root - INFO - [MQTT-REMOTE] Rent request received for Slot 3
+2026-04-01 02:26:24,950 - root - INFO - [MQTT-REMOTE] Rent request received for Slot 3
+2026-04-01 02:26:26,107 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:26:26] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:26:26,561 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:26:26] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:26:26,967 - root - INFO - [MQTT-REMOTE] Full status sync received from server
+2026-04-01 02:26:27,109 - root - INFO - [MQTT-REMOTE] Full status sync received from server
+2026-04-01 02:26:27,137 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:26:27] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:26:27,963 - root - INFO - [MQTT-REMOTE] Full status sync received from server
+2026-04-01 02:26:27,993 - root - INFO - [MQTT-REMOTE] Full status sync received from server
+2026-04-01 02:26:28,599 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:26:28] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:26:28,944 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:26:28] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:26:29,248 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:26:29] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:26:29,560 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:26:29] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:26:29,638 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:26:29] "GET /api/health HTTP/1.1" 200 -
+2026-04-01 02:26:32,553 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:26:32] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:26:33,103 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:26:33] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:26:33,558 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:26:33] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:26:34,106 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:26:34] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:26:34,561 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:26:34] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:26:35,108 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:26:35] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:26:35,561 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:26:35] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:26:36,107 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:26:36] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:26:36,560 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:26:36] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:26:37,104 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:26:37] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:26:37,559 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:26:37] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:26:38,117 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:26:38] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:26:38,644 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:26:38] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:26:39,110 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:26:39] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:26:39,563 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:26:39] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:26:40,112 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:26:40] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:26:40,564 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:26:40] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:26:41,570 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:26:41] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:26:42,303 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:26:42] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:26:43,117 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:26:43] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:26:43,569 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:26:43] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:26:44,109 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:26:44] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:26:44,639 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:26:44] "GET /api/health HTTP/1.1" 200 -
+2026-04-01 02:26:44,952 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:26:44] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:26:45,562 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:26:45] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:26:46,275 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:26:46] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:26:47,123 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:26:47] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:26:47,640 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:26:47] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:26:48,110 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:26:48] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:26:48,566 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:26:48] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:26:49,112 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:26:49] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:26:49,578 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:26:49] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:26:49,621 - root - INFO - [MQTT-REMOTE] Full status sync received from server
+2026-04-01 02:26:49,656 - root - INFO - [MQTT-REMOTE] Full status sync received from server
+2026-04-01 02:26:50,575 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:26:50] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:26:51,120 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:26:51] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:26:59,633 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:26:59] "GET /api/health HTTP/1.1" 200 -
+2026-04-01 02:27:14,637 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:27:14] "GET /api/health HTTP/1.1" 200 -
+2026-04-01 02:27:29,637 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:27:29] "GET /api/health HTTP/1.1" 200 -
+2026-04-01 02:27:35,606 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:27:35] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:27:36,162 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:27:36] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:27:37,049 - root - INFO - [MQTT-REMOTE] Full status sync received from server
+2026-04-01 02:27:37,114 - root - INFO - [MQTT-REMOTE] Full status sync received from server
+2026-04-01 02:27:38,162 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:27:38] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:27:38,594 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:27:38] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:27:43,084 - root - INFO - [PAYMENT] Incoming payment request: IDR 5000
+2026-04-01 02:27:43,119 - root - INFO - [PAYMENT] Incoming payment request: IDR 5000
+2026-04-01 02:27:44,190 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:27:44] "GET /api/qris?data=https://boseh.devserver.my.id/api/customer/transaction/set-paid/658 HTTP/1.1" 200 -
+2026-04-01 02:27:44,613 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:27:44] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:27:44,635 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:27:44] "GET /api/health HTTP/1.1" 200 -
+2026-04-01 02:27:45,173 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:27:45] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:27:45,611 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:27:45] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:27:46,168 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:27:46] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:27:59,634 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:27:59] "GET /api/health HTTP/1.1" 200 -
+2026-04-01 02:28:05,086 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:28:05] "GET /maintenance HTTP/1.1" 200 -
+2026-04-01 02:28:05,428 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:28:05] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2026-04-01 02:28:05,429 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:28:05] "[36mGET /static/img/dishub_logo.png HTTP/1.1[0m" 304 -
+2026-04-01 02:28:05,753 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:28:05] "GET /stream HTTP/1.1" 200 -
+2026-04-01 02:28:07,583 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:28:07] "GET /logs HTTP/1.1" 200 -
+2026-04-01 02:28:07,922 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:28:07] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2026-04-01 02:28:08,239 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:28:08] "GET /api/logs HTTP/1.1" 200 -
+2026-04-01 02:28:13,246 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:28:13] "GET /api/logs HTTP/1.1" 200 -
+2026-04-01 02:28:18,253 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:28:18] "GET /api/logs HTTP/1.1" 200 -
+2026-04-01 02:28:21,375 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:28:21] "GET /api/logs HTTP/1.1" 200 -
+2026-04-01 02:28:23,252 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:28:23] "GET /api/logs HTTP/1.1" 200 -
+2026-04-01 02:28:28,247 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:28:28] "GET /api/logs HTTP/1.1" 200 -
+2026-04-01 02:28:32,844 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:28:32] "GET /maintenance HTTP/1.1" 200 -
+2026-04-01 02:28:33,175 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:28:33] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2026-04-01 02:28:33,175 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:28:33] "[36mGET /static/img/dishub_logo.png HTTP/1.1[0m" 304 -
+2026-04-01 02:28:33,501 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:28:33] "GET /stream HTTP/1.1" 200 -
+2026-04-01 02:28:36,644 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:28:36] "GET / HTTP/1.1" 200 -
+2026-04-01 02:28:36,989 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:28:36] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2026-04-01 02:28:36,991 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:28:36] "[36mGET /static/img/dishub_logo.png HTTP/1.1[0m" 304 -
+2026-04-01 02:28:36,994 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:28:36] "[36mGET /static/img/bike.png HTTP/1.1[0m" 304 -
+2026-04-01 02:28:37,306 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:28:37] "[36mGET /static/js/script.js HTTP/1.1[0m" 304 -
+2026-04-01 02:28:37,315 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:28:37] "GET /qrcode HTTP/1.1" 200 -
+2026-04-01 02:28:37,614 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:28:37] "GET /stream HTTP/1.1" 200 -
+2026-04-01 02:28:37,619 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:28:37] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:28:37,621 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:28:37] "GET /api/health HTTP/1.1" 200 -
+2026-04-01 02:28:52,623 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:28:52] "GET /api/health HTTP/1.1" 200 -
+2026-04-01 02:29:07,618 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:29:07] "GET /api/health HTTP/1.1" 200 -
+2026-04-01 02:29:22,633 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:29:22] "GET /api/health HTTP/1.1" 200 -
+2026-04-01 02:29:37,622 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:29:37] "GET /api/health HTTP/1.1" 200 -
+2026-04-01 02:29:52,619 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:29:52] "GET /api/health HTTP/1.1" 200 -
+2026-04-01 02:30:07,630 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:30:07] "GET /api/health HTTP/1.1" 200 -
+2026-04-01 02:30:22,628 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:30:22] "GET /api/health HTTP/1.1" 200 -
+2026-04-01 02:30:37,618 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:30:37] "GET /api/health HTTP/1.1" 200 -
+2026-04-01 02:30:52,426 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:30:52] "GET /maintenance HTTP/1.1" 200 -
+2026-04-01 02:30:52,628 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:30:52] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2026-04-01 02:30:52,768 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:30:52] "GET /stream HTTP/1.1" 200 -
+2026-04-01 02:30:52,770 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:30:52] "[36mGET /static/img/dishub_logo.png HTTP/1.1[0m" 304 -
+2026-04-01 02:31:00,735 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:31:00] "GET /admin HTTP/1.1" 200 -
+2026-04-01 02:31:01,061 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:31:01] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2026-04-01 02:31:01,061 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:31:01] "[36mGET /static/img/dishub_logo.png HTTP/1.1[0m" 304 -
+2026-04-01 02:31:06,558 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:31:06] "GET / HTTP/1.1" 200 -
+2026-04-01 02:31:06,893 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:31:06] "[36mGET /static/img/dishub_logo.png HTTP/1.1[0m" 304 -
+2026-04-01 02:31:06,894 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:31:06] "[36mGET /static/js/script.js HTTP/1.1[0m" 304 -
+2026-04-01 02:31:06,895 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:31:06] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2026-04-01 02:31:06,895 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:31:06] "[36mGET /static/img/bike.png HTTP/1.1[0m" 304 -
+2026-04-01 02:31:07,199 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:31:07] "GET /stream HTTP/1.1" 200 -
+2026-04-01 02:31:07,216 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:31:07] "GET /api/health HTTP/1.1" 200 -
+2026-04-01 02:31:07,221 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:31:07] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:31:07,221 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:31:07] "GET /qrcode HTTP/1.1" 200 -
+2026-04-01 02:31:22,226 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:31:22] "GET /api/health HTTP/1.1" 200 -
+2026-04-01 02:31:37,218 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:31:37] "GET /api/health HTTP/1.1" 200 -
+2026-04-01 02:31:43,993 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:31:43] "GET /admin HTTP/1.1" 200 -
+2026-04-01 02:31:44,336 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:31:44] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2026-04-01 02:31:44,339 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:31:44] "[36mGET /static/img/dishub_logo.png HTTP/1.1[0m" 304 -
+2026-04-01 02:31:51,961 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:31:51] "GET /maintenance HTTP/1.1" 200 -
+2026-04-01 02:31:52,305 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:31:52] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2026-04-01 02:31:52,306 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:31:52] "[36mGET /static/img/dishub_logo.png HTTP/1.1[0m" 304 -
+2026-04-01 02:31:52,632 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:31:52] "GET /stream HTTP/1.1" 200 -
+2026-04-01 02:37:42,659 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:37:42] "GET /maintenance HTTP/1.1" 200 -
+2026-04-01 02:37:43,006 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:37:43] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2026-04-01 02:37:43,006 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:37:43] "[36mGET /static/img/dishub_logo.png HTTP/1.1[0m" 304 -
+2026-04-01 02:37:43,253 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:37:43] "GET /stream HTTP/1.1" 200 -
+2026-04-01 02:38:26,045 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:38:26] "POST /check_device/40 HTTP/1.1" 200 -
+2026-04-01 02:38:28,504 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:38:28] "POST /check_device/3 HTTP/1.1" 200 -
+2026-04-01 02:38:31,590 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:38:31] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:38:34,600 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:38:34] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:38:41,911 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:38:41] "POST /check_device/3 HTTP/1.1" 200 -
+2026-04-01 02:38:42,484 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:38:42] "POST /check_device/2 HTTP/1.1" 200 -
+2026-04-01 02:38:42,523 - werkzeug - INFO -  * Detected change in 'D:\\Research 2026\\Boseh\\ProgramV2\\BosehV2\\app.py', reloading
+2026-04-01 02:38:42,625 - werkzeug - INFO -  * Restarting with stat
+2026-04-01 02:38:43,304 - werkzeug - WARNING -  * Debugger is active!
+2026-04-01 02:38:43,308 - werkzeug - INFO -  * Debugger PIN: 221-663-692
+2026-04-01 02:38:49,074 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:38:49] "GET /stream HTTP/1.1" 200 -
+2026-04-01 02:38:50,871 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:38:50] "POST /check_device/40 HTTP/1.1" 200 -
+2026-04-01 02:38:51,178 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:38:51] "POST /check_device/37 HTTP/1.1" 200 -
+2026-04-01 02:38:51,430 - root - INFO - [MQTT] Maintenance Update: Slot 10 (IP: 192.168.0.170, Connected: True)
+2026-04-01 02:38:51,514 - root - INFO - [MQTT] Maintenance Update: Slot 10 (IP: 192.168.0.170, Connected: True)
+2026-04-01 02:38:52,079 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:38:52] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:38:56,397 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:38:56] "GET /maintenance HTTP/1.1" 200 -
+2026-04-01 02:38:56,533 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:38:56] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2026-04-01 02:38:56,727 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:38:56] "GET /stream HTTP/1.1" 200 -
+2026-04-01 02:38:56,728 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:38:56] "[36mGET /static/img/dishub_logo.png HTTP/1.1[0m" 304 -
+2026-04-01 02:39:02,733 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:39:02] "POST /test_solenoid/3 HTTP/1.1" 200 -
+2026-04-01 02:39:04,440 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:39:04] "POST /test_solenoid/2 HTTP/1.1" 200 -
+2026-04-01 02:39:05,202 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:39:05] "POST /test_solenoid/1 HTTP/1.1" 200 -
+2026-04-01 02:39:59,883 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:39:59] "POST /test_solenoid/37 HTTP/1.1" 200 -
+2026-04-01 02:40:03,286 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:40:03] "POST /test_solenoid/37 HTTP/1.1" 200 -
+2026-04-01 02:40:08,972 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:40:08] "GET / HTTP/1.1" 200 -
+2026-04-01 02:40:09,318 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:40:09] "[36mGET /static/img/bike.png HTTP/1.1[0m" 304 -
+2026-04-01 02:40:09,318 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:40:09] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2026-04-01 02:40:09,319 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:40:09] "[36mGET /static/js/script.js HTTP/1.1[0m" 304 -
+2026-04-01 02:40:09,329 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:40:09] "[36mGET /static/img/dishub_logo.png HTTP/1.1[0m" 304 -
+2026-04-01 02:40:09,371 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:40:09] "GET /qrcode HTTP/1.1" 200 -
+2026-04-01 02:40:09,677 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:40:09] "GET /stream HTTP/1.1" 200 -
+2026-04-01 02:40:09,680 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:40:09] "GET /api/health HTTP/1.1" 200 -
+2026-04-01 02:40:09,680 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:40:09] "GET /api/slots HTTP/1.1" 200 -
+2026-04-01 02:40:24,378 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:40:24] "GET /api/health HTTP/1.1" 200 -
+2026-04-01 02:40:39,683 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:40:39] "GET /api/health HTTP/1.1" 200 -
+2026-04-01 02:40:54,702 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:40:54] "GET /api/health HTTP/1.1" 200 -
+2026-04-01 02:41:09,688 - werkzeug - INFO - 127.0.0.1 - - [01/Apr/2026 02:41:09] "GET /api/health HTTP/1.1" 200 -

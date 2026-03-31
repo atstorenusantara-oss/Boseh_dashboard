@@ -1,4 +1,5 @@
 import sqlite3
+import socket
 import os
 import qrcode
 import io
@@ -464,10 +465,23 @@ def admin():
 
 @app.route('/maintenance')
 def maintenance():
+    def get_local_ip():
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        try:
+            # doesn't even have to be reachable
+            s.connect(('10.255.255.255', 1))
+            IP = s.getsockname()[0]
+        except Exception:
+            IP = '127.0.0.1'
+        finally:
+            s.close()
+        return IP
+
     db = get_db()
     slots = db.execute('SELECT * FROM slots ORDER BY slot_number').fetchall()
     settings = db.execute('SELECT * FROM settings').fetchall()
     settings_dict = {s['key']: s['value'] for s in settings}
+    return render_template('maintenance.html', slots=slots, settings=settings_dict, server_ip=get_local_ip())
     return render_template('maintenance.html', slots=slots, settings=settings_dict)
 
 @app.route('/logs')
