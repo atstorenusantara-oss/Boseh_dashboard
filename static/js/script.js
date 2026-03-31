@@ -36,25 +36,16 @@ async function refreshSlots() {
         
         let html = '';
         data.slots.forEach(slot => {
-            // Extract countdown number if exists in bike_status (e.g. "Silahkan ambil sepeda (53s)")
-            let countdownHtml = '';
             let displayStatus = slot.bike_status || '';
+            const isPickup = displayStatus.toLowerCase().includes('silahkan');
             
-            const match = displayStatus.match(/\(([^)]+)\)/);
-            if (match && slot.has_bike) {
-                countdownHtml = `<div class="countdown-box">${match[1]}</div>`;
-                // Clean the status string for the top text display
-                displayStatus = displayStatus.replace(/\s*\([^)]+\)/, '');
-            } else if (match && !slot.has_bike) {
-                // If countdown data exists but bike is gone, just hide everything
-                displayStatus = '';
-            }
+            // Clean the status string for the top text display (remove countdown part like (40s))
+            displayStatus = displayStatus.replace(/\s*\([^)]+\)/, '');
 
             html += `
-                <div class="slot">
+                <div class="slot ${isPickup ? 'slot-pickup' : ''}">
                     <span class="slot-number">${slot.slot_number}${(slot.has_bike && displayStatus) ? ` <span style="color: #666; font-size: 0.8em; font-weight: normal;">(${displayStatus})</span>` : ''}</span>
                     <div class="bike-placeholder">
-                        ${countdownHtml}
                         ${slot.has_bike ? `<img src="/static/img/bike.png" alt="Bike" class="bike-img">` : ''}
                         ${slot.maintenance ? `
                             <div class="maintenance-overlay">

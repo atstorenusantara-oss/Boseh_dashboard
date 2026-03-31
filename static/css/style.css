@@ -205,29 +205,39 @@ body {
 .bike-placeholder {
     width: 100%;
     height: 120px;
-    background: var(--primary-blue);
+    background: transparent;
     border-radius: 8px;
     display: flex;
     justify-content: center;
     align-items: center;
     padding: 10px;
-    overflow: hidden;
-    position: relative; /* Added for absolute positioning of countdown */
+    overflow: visible;
+    position: relative;
+}
+
+.bike-placeholder::before,
+.bike-placeholder::after {
+    content: '';
+    position: absolute;
+    top: 5px;
+    bottom: 5px;
+    width: 5px;
+    background: var(--primary-blue);
+    border-radius: 10px;
+    transition: background 0.3s ease;
+}
+
+.bike-placeholder::before { left: 0; }
+.bike-placeholder::after { right: 0; }
+
+.slot-pickup .bike-placeholder::before,
+.slot-pickup .bike-placeholder::after {
+    background: #4ade80 !important;
+    box-shadow: 0 0 10px rgba(74, 222, 128, 0.5);
 }
 
 .countdown-box {
-    position: absolute;
-    top: 10px;
-    right: 15px;
-    font-size: 1.8rem;
-    font-weight: 800;
-    color: var(--primary-blue);
-    background: rgba(255, 255, 255, 0.85);
-    padding: 5px 12px;
-    border-radius: 8px;
-    z-index: 5;
-    pointer-events: none;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    display: none; /* Removed as requested */
 }
 
 .bike-img {
@@ -453,7 +463,7 @@ body {
         min-width: 85px; 
         margin-bottom: 0.5rem; 
     }
-    .bike-placeholder { height: 90px; padding: 5px; }
+    .bike-placeholder { height: 90px; padding: 5px; background: transparent; }
     .slot-number { font-size: 1.1rem; margin-bottom: 0.2rem; }
     .rfid-display { font-size: 0.6rem; padding: 1px 4px; }
     

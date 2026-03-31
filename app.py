@@ -369,8 +369,8 @@ def handle_remote_mqtt(topic, data):
                     db.commit()
                 last_update_time = time.time()
                 
-            # Countdown 50s
-            for i in range(50, 0, -1):
+            # Countdown 40s
+            for i in range(40, 0, -1):
                 with app.app_context():
                     db = get_db()
                     try:
