@@ -1,0 +1,21 @@
+# PyInstaller
+build/
+dist/
+*.spec
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+env/
+
+# Database
+boseh.db
+
+# Logs
+*.log
+
+# Windows
+Thumbs.db
+Desktop.ini

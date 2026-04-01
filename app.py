@@ -19,8 +19,29 @@ import requests
 import logging
 from logging.handlers import RotatingFileHandler
 
-app = Flask(__name__)
+import sys
+
+# Path helper for PyInstaller
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+    return os.path.join(base_path, relative_path)
+
+if getattr(sys, 'frozen', False):
+    # Running as compiled .exe
+    template_folder = resource_path('templates')
+    static_folder = resource_path('static')
+    app = Flask(__name__, template_folder=template_folder, static_folder=static_folder)
+else:
+    # Running normally
+    app = Flask(__name__)
+
 DATABASE = 'boseh.db'
+
 
 # MQTT Constants
 MQTT_BROKER = "localhost" # Menggunakan Mosquitto Lokal
@@ -802,31 +823,47 @@ def get_qris():
     img_io.seek(0)
     return send_file(img_io, mimetype='image/png')
 
+import webview
+
+def run_flask():
+    app.run(host='127.0.0.1', port=5000, debug=False, use_reloader=False)
+
+
 if __name__ == '__main__':
     # Initialize DB first before anything else
     print("Initializing Database...")
     init_db()
 
-    # Start all background threads only once (avoid double threads in Flask Debug mode)
-    if not app.debug or os.environ.get('WERKZEUG_RUN_MAIN') == 'true':
-        print("Starting background service threads...")
-        
-        # 1. Local MQTT
-        threading.Thread(target=run_mqtt, daemon=True).start()
-        
-        # 2. API Sync
-        threading.Thread(target=api_client_station.sync_station_data_from_api, daemon=True).start()
-        
-        # 3. Remote Rental & Status MQTT
-        threading.Thread(target=mqtt_client_remote.start_mqtt_client, args=(handle_remote_mqtt,), daemon=True).start()
-        
-        # 4. Remote Payment MQTT
-        threading.Thread(target=mqtt_client_payment.start_mqtt_payment_client, args=(handle_payment_received,), daemon=True).start()
+    # Start all background threads
+    print("Starting background service threads...")
+    
+    # 1. Local MQTT
+    threading.Thread(target=run_mqtt, daemon=True).start()
+    
+    # 2. API Sync
+    threading.Thread(target=api_client_station.sync_station_data_from_api, daemon=True).start()
+    
+    # 3. Remote Rental & Status MQTT
+    threading.Thread(target=mqtt_client_remote.start_mqtt_client, args=(handle_remote_mqtt,), daemon=True).start()
+    
+    # 4. Remote Payment MQTT
+    threading.Thread(target=mqtt_client_payment.start_mqtt_payment_client, args=(handle_payment_received,), daemon=True).start()
 
-        # 5. API Health Check
-        threading.Thread(target=check_api_health_loop, daemon=True).start()
+    # 5. API Health Check
+    threading.Thread(target=check_api_health_loop, daemon=True).start()
 
-        # 6. Automatic Token Refresh (Every 5 Minutes)
-        threading.Thread(target=api_client_station.api_token_refresh_loop, daemon=True).start()
+    # 6. Automatic Token Refresh (Every 5 Minutes)
+    threading.Thread(target=api_client_station.api_token_refresh_loop, daemon=True).start()
 
-    app.run(host='0.0.0.0', debug=True, port=5000)
+    # 7. Start Flask Server in a thread
+    t = threading.Thread(target=run_flask)
+    t.daemon = True
+    t.start()
+
+    # 8. Start Webview window (Kiosk Mode: Fullscreen & Frameless)
+    print("Launching Desktop UI in Fullscreen...")
+    webview.create_window('Boseh Dashboard V2', 'http://127.0.0.1:5000', 
+                          fullscreen=True)
+    webview.start()
+
+

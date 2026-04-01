@@ -85,33 +85,40 @@ Menampilkan status fisik setiap slot docking.
 
 ## 7. Panduan Instalasi & Deployment
 
-Proyek ini telah dikonfigurasi untuk kemudahan deployment di lapangan dengan dua metode utama:
+Proyek ini telah dikonfigurasi untuk kemudahan deployment di lapangan dengan tiga metode utama:
 
-### A. Instalasi Standar (Online)
+### A. Tampilan Desktop App (Kiosk Mode) - DIREKOMENDASIKAN UNTUK STATION
+Aplikasi telah dikonversi menjadi file executable mandiri yang berjalan dalam jendela desktop tanpa browser (Address Bar).
+- **File:** `dist/Boseh_App.exe`
+- **Fitur:** Auto-Fullscreen, Frameless (Tanpa Judul Windows), dan Single Window.
+- **Teknologi:** `pywebview` + `PyInstaller`.
+- **Cara Keluar:** Tekan `Alt + F4`.
+
+### B. Instalasi Standar (Online)
 Gunakan file **`INSTALL_PC_BARU.bat`**. 
 - Membutuhkan koneksi internet untuk mendownload library Python.
 - Mengecek keberadaan Python dan Mosquitto secara otomatis.
 - Cocok jika PC server terhubung ke internet saat setup pertama kali.
 
-### B. Instalasi Full Offline (Tanpa Internet) - DIREKOMENDASIKAN
+### C. Instalasi Full Offline (Tanpa Internet)
 Gunakan file **`INSTALL_OFFLINE.bat`**. 
 - Seluruh dependensi sudah tersedia di dalam folder `offline_setup/`.
 - **Status Dependensi**: Terverifikasi Lengkap (Termasuk Python 3.12, Mosquitto, dan semua Library .whl seperti `flask`, `requests`, `paho-mqtt`, `qrcode`, dan `pillow`).
-- Sangat direkomendasikan untuk deployment di stasiun yang tidak memiliki akses internet stabil.
-
-#### Cara Maintenance Folder Offline
-Jika Anda menambahkan library baru di `requirements.txt` dan ingin memperbarui paket offline, jalankan perintah berikut di PC yang memiliki internet:
-```bash
-pip download -r requirements.txt -d "offline_setup/libs"
-```
-Hal ini akan mendownload versi terbaru dari semua library yang dibutuhkan ke folder lokal sehingga instalasi offline tetap mutakhir.
 
 ---
 
 ### Daftar Script Utilitas (`.bat`)
-- `START_BOSEH.bat`: Launcher utama. Menjalankan Mosquitto, Flask Server, dan membuka Dashboard (Chrome Maximize).
-- `STOP_BOSEH.bat`: Menutup semua proses server secara bersih.
+- `Boseh_App.exe`: Aplikasi utama (Desktop Mode - Kiosk).
+- `RUN_EXE.bat`: Launcher untuk menjalankan versi Executable Desktop.
+- `BUILD_EXE.bat`: Script untuk mengompilasi ulang kode `.py` menjadi `.exe` baru.
+- `START_BOSEH.bat`: Launcher versi Web (Menjalankan server & membuka Chrome).
+- `STOP_BOSEH.bat`: Menutup semua proses server (Python & Mosquitto) secara bersih.
 - `INSTALL_OFFLINE.bat`: Script instalasi mandiri (Full Offline).
 - `INSTALL_PC_BARU.bat`: Script instalasi otomatis (Memerlukan Internet).
-- `run_server.bat`: Script cepat hanya untuk menjalankan server Flask tanpa launcher.
+
+---
+
+## 8. Keamanan & Proteksi Karya (Internal)
+Detail mengenai strategi penguncian aplikasi (Hardware ID Locking, Password Admin, dan Branding) dapat dilihat pada dokumen terpisah: **[secret.md](secret.md)**.
+
 
