@@ -150,10 +150,55 @@
                     <input type="number" name="total_slots" value="{{ settings.total_slots }}" min="1" max="24">
                 </div>
 
+                <div style="margin-top: 1rem; padding: 1.5rem; background: #fff5f5; border-radius: 15px; border: 1px solid #fed7d7;">
+                    <h4 style="color: #c53030; margin-top: 0; margin-bottom: 1rem; display: flex; align-items: center; gap: 10px;">
+                        <span>🔌</span> Manajemen Daya (Power)
+                    </h4>
+                    
+                    <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 1rem;">
+                        <label class="switch" style="position: relative; display: inline-block; width: 50px; height: 26px;">
+                            <input type="checkbox" name="auto_shutdown_enabled" value="1" {% if settings.auto_shutdown_enabled == '1' %}checked{% endif %} style="opacity: 0; width: 0; height: 0;">
+                            <span class="slider" style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px;"></span>
+                        </label>
+                        <span style="font-weight: 600; color: #444;">Aktifkan Jadwal Mati Otomatis</span>
+                    </div>
+
+                    <div style="margin-bottom: 1.5rem;">
+                        <label style="display: block; font-weight: 700; margin-bottom: 0.5rem; color: #555; font-size: 0.8rem;">Jam PC Mati Otomatis</label>
+                        <input type="time" name="auto_shutdown_time" value="{{ settings.auto_shutdown_time }}" style="max-width: 150px;">
+                    </div>
+
+                    <button type="button" onclick="confirmShutdown()" style="background: #e53e3e; color: white; border: none; padding: 0.8rem 1.5rem; border-radius: 10px; font-weight: 700; cursor: pointer; width: 100%; transition: all 0.2s;">
+                        🔴 Matikan PC Sekarang (Manual)
+                    </button>
+                </div>
+
                 <button type="submit" class="save-btn">Simpan Semua Perubahan</button>
             </form>
         </div>
     </div>
+    <style>
+        /* Switch styling for better UI */
+        .switch input:checked + .slider { background-color: #e53e3e; }
+        .switch input:focus + .slider { box-shadow: 0 0 1px #e53e3e; }
+        .switch input:checked + .slider:before { transform: translateX(24px); }
+        .slider:before {
+            position: absolute; content: ""; height: 18px; width: 18px; left: 4px; bottom: 4px;
+            background-color: white; transition: .4s; border-radius: 50%;
+        }
+    </style>
+    <script>
+        function confirmShutdown() {
+            if (confirm("Apakah Anda yakin ingin MEMATIKAN PC ini sekarang?")) {
+                fetch('/api/shutdown', { method: 'POST' })
+                    .then(response => response.json())
+                    .then(data => {
+                        alert(data.message);
+                    })
+                    .catch(err => alert("Gagal mematikan PC: " + err));
+            }
+        }
+    </script>
     <script>
         function toggleNavModal() {
             const modal = document.getElementById('navModal');

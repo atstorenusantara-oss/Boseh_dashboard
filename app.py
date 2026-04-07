@@ -9,6 +9,8 @@ import threading
 import paho.mqtt.client as mqtt
 import paho.mqtt.publish as publish
 from flask import Flask, render_template, request, redirect, url_for, send_file, Response
+from datetime import datetime
+import datetime
 from sub_programPY import api_client_station
 from sub_programPY import mqtt_client_remote
 from sub_programPY import mqtt_client_payment
@@ -94,6 +96,42 @@ def log_event(category, message, level="INFO"):
         
         threading.Thread(target=record_to_db, daemon=True).start()
     except: pass
+
+@app.route('/api/shutdown', methods=['POST'])
+def manual_shutdown():
+    log_event("SYSTEM", "Manual shutdown triggered from Admin Panel", "WARNING")
+    # Shutdown command for Windows
+    os.system("shutdown /s /t 5")
+    return {"status": "success", "message": "PC will shutdown in 5 seconds"}
+
+def auto_shutdown_loop():
+    """Background thread to check for scheduled shutdown."""
+    print("[Auto Shutdown] Service started...")
+    while True:
+        try:
+            # Check every minute
+            now = datetime.now()
+            current_time = now.strftime("%H:%M")
+            
+            # Use connection to avoid shared-state issues in thread
+            conn = sqlite3.connect(DATABASE, timeout=20)
+            conn.row_factory = sqlite3.Row
+            
+            enabled = conn.execute("SELECT value FROM settings WHERE key = 'auto_shutdown_enabled'").fetchone()
+            target = conn.execute("SELECT value FROM settings WHERE key = 'auto_shutdown_time'").fetchone()
+            conn.close()
+            
+            if enabled and enabled['value'] == "1" and target:
+                if current_time == target['value']:
+                    log_event("SYSTEM", f"Auto Shutdown triggered at {current_time}", "WARNING")
+                    print(f"[Auto Shutdown] Triggering system shutdown at {current_time}")
+                    os.system("shutdown /s /t 30") # 30 seconds delay
+                    time.sleep(120) # Wait to avoid repeated trigger during the same minute
+            
+        except Exception as e:
+            print(f"[Auto Shutdown] Error: {e}")
+            
+        time.sleep(30) # Check every 30 seconds
 
 # API Health Status
 last_api_status = False
@@ -332,7 +370,9 @@ def init_db():
             ("running_text", "Selamat datang di Station Boseh Dago! Silakan scan QR untuk menyewa sepeda."),
             ("station_name", "Station Dago"),
             ("station_address", "Jl. Ir. H. Juanda No.262"),
-            ("total_slots", "5")
+            ("total_slots", "5"),
+            ("auto_shutdown_enabled", "0"),
+            ("auto_shutdown_time", "22:00")
         ]
         
         for key, value in settings_to_seed:
@@ -617,10 +657,17 @@ def toggle_slot(slot_id):
 def update_settings():
     global last_update_time
     db = get_db()
-    setting_keys = ['running_text', 'station_name', 'station_address', 'total_slots']
+    setting_keys = ['running_text', 'station_name', 'station_address', 'total_slots', 'auto_shutdown_enabled', 'auto_shutdown_time']
+    
+    # Pre-process auto_shutdown_enabled as it's a checkbox usually
+    if 'auto_shutdown_enabled' not in request.form:
+        db.execute('UPDATE settings SET value = ? WHERE key = ?', ("0", "auto_shutdown_enabled"))
+    
     for key in setting_keys:
         if key in request.form:
             value = request.form.get(key)
+            if key == 'auto_shutdown_enabled':
+                value = "1"
             db.execute('UPDATE settings SET value = ? WHERE key = ?', (value, key))
             
             # If total_slots is changed, sync the slots table
@@ -872,6 +919,9 @@ if __name__ == '__main__':
 
     # 5. API Health Check
     threading.Thread(target=check_api_health_loop, daemon=True).start()
+    
+    # 5b. Auto Shutdown Check
+    threading.Thread(target=auto_shutdown_loop, daemon=True).start()
 
     # 6. Automatic Token Refresh (Every 5 Minutes)
     threading.Thread(target=api_client_station.api_token_refresh_loop, daemon=True).start()
