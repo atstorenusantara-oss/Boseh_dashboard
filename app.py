@@ -108,8 +108,16 @@ def on_connect(client, userdata, flags, rc):
     client.subscribe("boseh/ready")
     client.subscribe("boseh/maintenance")
 
+# Global tracker to prevent duplicate API calls for the same tag within a short time window
+last_processed_returns = {} # Format: {f"{slot_num}_{tag}": timestamp}
+
 def on_message(client, userdata, msg):
     global last_update_time
+    # 1. Abaikan pesan lama (retained) agar tidak memicu pengembalian ganda saat startup/reconnect
+    if msg.retain:
+        print(f"[Local MQTT] Ignoring retained message on topic {msg.topic}")
+        return
+
     try:
         payload_str = msg.payload.decode()
         data = json.loads(payload_str)
@@ -140,44 +148,13 @@ def on_message(client, userdata, msg):
                     log_event("MQTT", f"Maintenance Update: Slot {slot_num} (IP: {ip}, Connected: {status})")
             return
 
-        # Default: handle standard bike status updates (boseh/stasiun/confirm_open or similar)
+        # Default: handle standard bike status updates (boseh/stasiun/confirm_open)
         slot_num = data.get('slot_number')
         tag = data.get('rfid_tag')
         status = data.get('status')
         
         if slot_num is not None:
-            # Pengecekan status untuk eksekusi API Eksternal
-            if tag and tag.lower() != "null":
-                if status is False:
-                    # Sepeda diangkat -> Confirm Open
-                    threading.Thread(target=api_confirm_open.confirm_open, args=(tag,), daemon=True).start()
-                elif status is True:
-                    # 1. Sepeda disimpan -> Return Bike (Dijalankan di thread terpisah)
-                    threading.Thread(target=api_return.return_bike, args=(tag, slot_num), daemon=True).start()
-                    
-                    # 2. Update status ke "Sepeda sudah masuk" dan kembalikan ke "ready" setelah 10 detik
-                    def update_return_status(s_num):
-                        # Simpan ke DB "Sepeda sudah masuk"
-                        with app.app_context():
-                            db = get_db()
-                            db.execute("UPDATE slots SET bike_status = 'Sepeda sudah masuk' WHERE slot_number = ?", (s_num,))
-                            db.commit()
-                            global last_update_time
-                            last_update_time = time.time()
-                            
-                        # Tunggu 10 detik
-                        time.sleep(10)
-                        
-                        # Set balik ke "ready"
-                        with app.app_context():
-                            db = get_db()
-                            db.execute("UPDATE slots SET bike_status = 'ready' WHERE slot_number = ?", (s_num,))
-                            db.commit()
-                            last_update_time = time.time()
-                    
-                    threading.Thread(target=update_return_status, args=(slot_num,), daemon=True).start()
-
-            # We use a context manager to ensure DB is updated
+            # 1. Update Database Lokal SEGERA untuk merekam state terbaru
             with app.app_context():
                 db = get_db()
                 if tag:
@@ -194,10 +171,49 @@ def on_message(client, userdata, msg):
                     ''', (status, status, slot_num))
                 db.commit()
                 last_update_time = time.time()
-                print(f"MQTT Update: Slot {slot_num} updated via {msg.topic}")
+
+            # 2. Pengecekan Ekskusi API External
+            if tag and tag.lower() != "null":
+                if status is False:
+                    # Sepeda diangkat -> Confirm Open
+                    print(f"[Local MQTT] Slot {slot_num} Bike REMOVED (RFID: {tag})")
+                    threading.Thread(target=api_confirm_open.confirm_open, args=(tag,), daemon=True).start()
+                elif status is True:
+                    # Mekanisme Debounce: Cek apakah tag ini baru saja diproses dalam 5 detik terakhir
+                    process_key = f"{slot_num}_{tag}"
+                    now = time.time()
+                    last_time = last_processed_returns.get(process_key, 0)
+                    
+                    if (now - last_time) > 5:
+                        last_processed_returns[process_key] = now
+                        print(f"[Local MQTT] Slot {slot_num} Bike RETURNED. Tag: {tag}. Sending API Return.")
+                        # Jalankan Return Bike
+                        threading.Thread(target=api_return.return_bike, args=(tag, slot_num), daemon=True).start()
+                        
+                        # Update status dashboard (Visual Feedback)
+                        def update_visual_status(s_num):
+                            with app.app_context():
+                                db_v = get_db()
+                                db_v.execute("UPDATE slots SET bike_status = 'Sepeda sudah masuk' WHERE slot_number = ?", (s_num,))
+                                db_v.commit()
+                                global last_update_time
+                                last_update_time = time.time()
+                            time.sleep(10)
+                            with app.app_context():
+                                db_v = get_db()
+                                db_v.execute("UPDATE slots SET bike_status = 'ready' WHERE slot_number = ?", (s_num,))
+                                db_v.commit()
+                                last_update_time = time.time()
+                        
+                        threading.Thread(target=update_visual_status, args=(slot_num,), daemon=True).start()
+                    else:
+                        print(f"[Local MQTT] Duplikat terdeteksi untuk Slot {slot_num} Tag {tag}. Mengabaikan.")
+
+            print(f"MQTT Update: Slot {slot_num} processed via {msg.topic}")
 
     except Exception as e:
         print(f"Error processing MQTT message: {e}")
+
 
 def run_mqtt():
     client = mqtt.Client()
@@ -342,7 +358,32 @@ def handle_remote_mqtt(topic, data):
     
     # Check if it's a rent request (dock/open)
     if topic.endswith('/dock/open'):
-        slot_num = data.get('bike', {}).get('docking_id')
+        # 1. RECOVERY DATA: Ambil data penting segera
+        bike_info = data.get('bike', {})
+        slot_num = bike_info.get('docking_id')
+        bike_id = bike_info.get('bike_id')
+        
+        if slot_num is None or bike_id is None:
+            log_event("MQTT-REMOTE", f"Invalid Rent Request: Data bike tidak lengkap.", "ERROR")
+            return
+
+        # 2. IMMEDIATE ACTION: Pemicu Hardware Lokal (Langkah 2) agar solenoid cepat terbuka
+        try:
+            local_payload = json.dumps({
+                "slot_number": int(slot_num),
+                "rfid_tag": str(bike_id)
+            })
+            local_topic = f"boseh/status/{slot_num}"
+            publish.single(local_topic, payload=local_payload, hostname=MQTT_BROKER, port=MQTT_PORT)
+            print(f"[Local MQTT] PRIORITY: Triggered {local_topic} for Slot {slot_num}")
+        except Exception as e:
+            print(f"[Local MQTT] Error priority publish: {e}")
+
+        # 3. IMMEDIATE ACTION: Konfirmasi ke Server Pusat (Langkah 3)
+        print(f"[Automation] PRIORITY: Sending Confirm Ready for Bike ID: {bike_id}")
+        threading.Thread(target=api_confirm_ready.confirm_ready, args=(bike_id,), daemon=True).start()
+
+        # 4. DASHBOARD UPDATE: Menampilkan dialog data penyewa (Langkah 1)
         log_event("MQTT-REMOTE", f"Rent request received for Slot {slot_num}")
         
         # Enrich with local bike_name from slots table
@@ -351,7 +392,6 @@ def handle_remote_mqtt(topic, data):
                 db = get_db()
                 slot_info = db.execute("SELECT bike_name FROM slots WHERE slot_number = ?", (slot_num,)).fetchone()
                 if slot_info and slot_info['bike_name']:
-                    if 'bike' not in data: data['bike'] = {}
                     data['bike']['bike_name_local'] = slot_info['bike_name']
         except Exception as e:
             print(f"Error enriching remote data: {e}")
@@ -360,35 +400,15 @@ def handle_remote_mqtt(topic, data):
         latest_event_time = time.time()
         last_update_time = time.time()
 
-        # Publish to local MQTT boseh/status for IoT/Hardware pulse
-        try:
-            slot_num = data.get('bike', {}).get('docking_id')
-            bike_id = data.get('bike', {}).get('bike_id')
-            if slot_num is not None and bike_id is not None:
-                # 1. Provide IoT pulse to local hardware (if any)
-                local_payload = json.dumps({
-                    "slot_number": int(slot_num),
-                    "rfid_tag": str(bike_id)
-                })
-                publish.single("boseh/status", payload=local_payload, hostname=MQTT_BROKER, port=MQTT_PORT)
-                print(f"[Local MQTT] Triggered boseh/status: {local_payload}")
-
-                # 2. AUTOMATION: Immediately Send Confirm Ready back to Server Pusat
-                print(f"[Automation] Automatically sending Confirm Ready for Bike ID: {bike_id}")
-                threading.Thread(target=api_confirm_ready.confirm_ready, args=(bike_id,), daemon=True).start()
-        except Exception as e:
-            print(f"[Local MQTT] Error publishing/automating: {e}")
-
-        def update_status_after_delay():
+        # 5. BACKGROUND STATUS MANAGEMENT: Menghandle timer dan instruksi pengambilan
+        def update_status_after_delay(s_num, b_data):
             global last_update_time
             time.sleep(5)
-            docking_id = data.get('bike', {}).get('docking_id')
             
             with app.app_context():
                 db = get_db()
-                if docking_id is not None:
-                    db.execute("UPDATE slots SET bike_status = 'Silahkan ambil sepeda' WHERE slot_number = ?", (docking_id,))
-                    db.commit()
+                db.execute("UPDATE slots SET bike_status = 'Silahkan ambil sepeda' WHERE slot_number = ?", (s_num,))
+                db.commit()
                 last_update_time = time.time()
                 
             # Countdown 40s
@@ -396,15 +416,15 @@ def handle_remote_mqtt(topic, data):
                 with app.app_context():
                     db = get_db()
                     try:
-                        cursor = db.execute("SELECT has_bike FROM slots WHERE slot_number = ?", (docking_id,))
+                        cursor = db.execute("SELECT has_bike FROM slots WHERE slot_number = ?", (s_num,))
                         row = cursor.fetchone()
                         if not row or row['has_bike'] == 0:
-                            db.execute("UPDATE slots SET bike_status = 'ready' WHERE slot_number = ?", (docking_id,))
+                            db.execute("UPDATE slots SET bike_status = 'ready' WHERE slot_number = ?", (s_num,))
                             db.commit()
                             last_update_time = time.time()
                             break
                         db.execute("UPDATE slots SET bike_status = ? WHERE slot_number = ? AND (bike_status LIKE 'Silahkan%' OR bike_status = 'ready')", 
-                                  (f"Silahkan ambil sepeda ({i}s)", docking_id))
+                                  (f"Silahkan ambil sepeda ({i}s)", s_num))
                         db.commit()
                         last_update_time = time.time()
                     except: pass
@@ -413,12 +433,13 @@ def handle_remote_mqtt(topic, data):
             with app.app_context():
                 db = get_db()
                 try:
-                    db.execute("UPDATE slots SET bike_status = 'ready' WHERE slot_number = ? AND bike_status LIKE 'Silahkan%'", (docking_id,))
+                    db.execute("UPDATE slots SET bike_status = 'ready' WHERE slot_number = ? AND bike_status LIKE 'Silahkan%'", (s_num,))
                     db.commit()
                     last_update_time = time.time()
                 except: pass
 
-        threading.Thread(target=update_status_after_delay, daemon=True).start()
+        threading.Thread(target=update_status_after_delay, args=(slot_num, data), daemon=True).start()
+
 
     # Check if it's a full status update (station/[client_id]/status)
     elif topic.endswith('/status'):

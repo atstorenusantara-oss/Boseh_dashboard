@@ -84,14 +84,18 @@ def sync_once():
                 
                 conn.commit()
                 print(f"[API Sync] Sync successful. Updated {len(bikes)} bikes.")
+                return True
             except Exception as ex:
                 print(f"[API Sync] DB Update error: {ex}")
+                return False
             finally:
                 conn.close()
         else:
             print(f"[API Sync] API Error {response.status_code}: {response.text[:100]}")
+            return False
     except Exception as e:
         print(f"[API Sync] Network Error: {e}")
+        return False
 
 def refresh_token():
     """Refresh the API token using the refresh endpoint and update database."""
@@ -130,10 +134,26 @@ def api_token_refresh_loop():
         refresh_token()
 
 def sync_station_data_from_api():
-    """Run synchronization once at startup."""
-    print("[API Sync] Starting one-time startup sync...")
-    sync_once()
-    print("[API Sync] Startup sync complete.")
+    """Run synchronization once at startup with up to 3 retries."""
+    print("[API Sync] Starting startup sync (Retries: 3)...")
+    
+    max_retries = 3
+    retry_delay = 5 # seconds
+    
+    for attempt in range(1, max_retries + 1):
+        print(f"[API Sync] Sync attempt {attempt}/{max_retries}...")
+        success = sync_once()
+        
+        if success:
+            print(f"[API Sync] Startup sync successful on attempt {attempt}.")
+            return True
+        else:
+            if attempt < max_retries:
+                print(f"[API Sync] Sync attempt {attempt} failed. Retrying in {retry_delay}s...")
+                time.sleep(retry_delay)
+            else:
+                print(f"[API Sync] All {max_retries} sync attempts failed.")
+                return False
 
 if __name__ == "__main__":
     sync_once()

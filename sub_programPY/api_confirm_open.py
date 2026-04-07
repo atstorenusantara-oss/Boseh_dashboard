@@ -46,6 +46,6 @@ def confirm_open(bike_id):
             print(f"[API Confirm Open] Gagal! Status: {response.status_code} | Response: {response.text}")
             return False, response.text
             
-    except Exception as e:
+    except Exception as e: 
         print(f"[API Confirm Open] Request Error: {e}")
         return False, str(e)

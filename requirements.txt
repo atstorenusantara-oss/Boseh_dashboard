@@ -3,3 +3,5 @@ qrcode
 pillow
 paho-mqtt
 requests
+pywebview
+pyinstaller
