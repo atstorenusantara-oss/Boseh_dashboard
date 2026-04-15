@@ -168,9 +168,14 @@
                         <input type="time" name="auto_shutdown_time" value="{{ settings.auto_shutdown_time }}" style="max-width: 150px;">
                     </div>
 
-                    <button type="button" onclick="confirmShutdown()" style="background: #e53e3e; color: white; border: none; padding: 0.8rem 1.5rem; border-radius: 10px; font-weight: 700; cursor: pointer; width: 100%; transition: all 0.2s;">
-                        🔴 Matikan PC Sekarang (Manual)
-                    </button>
+                    <div style="display: flex; gap: 10px; margin-top: 1rem;">
+                        <button type="button" onclick="openKeyboard()" style="background: #4a5568; color: white; border: none; padding: 0.8rem; border-radius: 10px; font-weight: 700; cursor: pointer; flex: 1; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                            ⌨️ Virtual Keyboard
+                        </button>
+                        <button type="button" onclick="confirmShutdown()" style="background: #e53e3e; color: white; border: none; padding: 0.8rem; border-radius: 10px; font-weight: 700; cursor: pointer; flex: 1; transition: all 0.2s;">
+                            🔴 Matikan PC
+                        </button>
+                    </div>
                 </div>
 
                 <button type="submit" class="save-btn">Simpan Semua Perubahan</button>
@@ -188,6 +193,15 @@
         }
     </style>
     <script>
+        function openKeyboard() {
+            fetch('/api/keyboard', { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data.message);
+                })
+                .catch(err => console.error("Gagal membuka keyboard: " + err));
+        }
+
         function confirmShutdown() {
             if (confirm("Apakah Anda yakin ingin MEMATIKAN PC ini sekarang?")) {
                 fetch('/api/shutdown', { method: 'POST' })

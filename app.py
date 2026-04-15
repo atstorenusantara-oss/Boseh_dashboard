@@ -104,6 +104,17 @@ def manual_shutdown():
     os.system("shutdown /s /t 5")
     return {"status": "success", "message": "PC will shutdown in 5 seconds"}
 
+@app.route('/api/keyboard', methods=['POST'])
+def open_keyboard():
+    log_event("SYSTEM", "Virtual keyboard requested")
+    try:
+        # Menjalankan keyboard virtual Windows. 
+        # Menggunakan 'start' agar proses tidak memblokir Flask
+        os.system("start osk")
+        return {"status": "success", "message": "Keyboard virtual dibuka"}
+    except Exception as e:
+        return {"status": "error", "message": str(e)}, 500
+
 def auto_shutdown_loop():
     """Background thread to check for scheduled shutdown."""
     print("[Auto Shutdown] Service started...")
