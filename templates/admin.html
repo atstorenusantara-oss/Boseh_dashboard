@@ -150,6 +150,33 @@
                     <input type="number" name="total_slots" value="{{ settings.total_slots }}" min="1" max="24">
                 </div>
 
+                <div style="margin-top: 1rem; padding: 1.5rem; background: #f0f7ff; border-radius: 15px; border: 1px solid #cce3ff;">
+                    <h4 style="color: #1e3a8a; margin-top: 0; margin-bottom: 1rem; display: flex; align-items: center; gap: 10px;">
+                        <span>📡</span> Komunikasi Device (IoT)
+                    </h4>
+                    
+                    <div style="margin-bottom: 1rem;">
+                        <label style="display: block; font-weight: 700; margin-bottom: 0.5rem; color: #555; font-size: 0.8rem;">Mode Jalur Utama</label>
+                        <select name="comm_mode" style="background: white;">
+                            <option value="mqtt" {% if settings.comm_mode == 'mqtt' %}selected{% endif %}>Local MQTT (Mosquitto)</option>
+                            <option value="serial" {% if settings.comm_mode == 'serial' %}selected{% endif %}>Serial USB (ESP32 Gateway)</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label style="display: block; font-weight: 700; margin-bottom: 0.5rem; color: #555; font-size: 0.8rem;">Port Serial (Jika mode Serial aktif)</label>
+                        <select name="serial_port" style="background: white;">
+                            {% if not available_ports %}
+                                <option value="{{ settings.serial_port }}">{{ settings.serial_port }} (Disconnected)</option>
+                            {% endif %}
+                            {% for port in available_ports %}
+                                <option value="{{ port.device }}" {% if settings.serial_port == port.device %}selected{% endif %}>{{ port.device }} - {{ port.description }}</option>
+                            {% endfor %}
+                        </select>
+                        <p style="font-size: 0.75rem; color: #666; margin-top: 5px;">*Refresh halaman untuk memperbarui daftar port USB.</p>
+                    </div>
+                </div>
+
                 <div style="margin-top: 1rem; padding: 1.5rem; background: #fff5f5; border-radius: 15px; border: 1px solid #fed7d7;">
                     <h4 style="color: #c53030; margin-top: 0; margin-bottom: 1rem; display: flex; align-items: center; gap: 10px;">
                         <span>🔌</span> Manajemen Daya (Power)

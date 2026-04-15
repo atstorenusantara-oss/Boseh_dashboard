@@ -8,6 +8,8 @@ import json
 import threading
 import paho.mqtt.client as mqtt
 import paho.mqtt.publish as publish
+import serial
+import serial.tools.list_ports
 from flask import Flask, render_template, request, redirect, url_for, send_file, Response
 from datetime import datetime
 import datetime
@@ -160,25 +162,18 @@ def on_connect(client, userdata, flags, rc):
 # Global tracker to prevent duplicate API calls for the same tag within a short time window
 last_processed_returns = {} # Format: {f"{slot_num}_{tag}": timestamp}
 
-def on_message(client, userdata, msg):
+def handle_device_event(topic, data, source="MQTT"):
+    """Unified handler for data from both MQTT and Serial."""
     global last_update_time
-    # 1. Abaikan pesan lama (retained) agar tidak memicu pengembalian ganda saat startup/reconnect
-    if msg.retain:
-        print(f"[Local MQTT] Ignoring retained message on topic {msg.topic}")
-        return
-
     try:
-        payload_str = msg.payload.decode()
-        data = json.loads(payload_str)
-        
-        if msg.topic == "boseh/ready":
+        if topic == "boseh/ready":
             bike_id = data.get('bike_id')
             if bike_id:
-                print(f"[Local MQTT] Received Ready Trigger for Bike: {bike_id}")
+                print(f"[{source}] Received Ready Trigger for Bike: {bike_id}")
                 threading.Thread(target=api_confirm_ready.confirm_ready, args=(bike_id,), daemon=True).start()
             return
 
-        if msg.topic == "boseh/maintenance":
+        if topic == "boseh/maintenance":
             slot_num = data.get('slot_number')
             ip = data.get('ip_address')
             status = data.get('status')
@@ -194,7 +189,7 @@ def on_message(client, userdata, msg):
                     ''', (ip, status, solenoid, slot_num))
                     db.commit()
                     last_update_time = time.time()
-                    log_event("MQTT", f"Maintenance Update: Slot {slot_num} (IP: {ip}, Connected: {status})")
+                    log_event(source, f"Maintenance Update: Slot {slot_num} (IP: {ip}, Connected: {status})")
             return
 
         # Default: handle standard bike status updates (boseh/stasiun/confirm_open)
@@ -225,7 +220,7 @@ def on_message(client, userdata, msg):
             if tag and tag.lower() != "null":
                 if status is False:
                     # Sepeda diangkat -> Confirm Open
-                    print(f"[Local MQTT] Slot {slot_num} Bike REMOVED (RFID: {tag})")
+                    print(f"[{source}] Slot {slot_num} Bike REMOVED (RFID: {tag})")
                     threading.Thread(target=api_confirm_open.confirm_open, args=(tag,), daemon=True).start()
                 elif status is True:
                     # Mekanisme Debounce: Cek apakah tag ini baru saja diproses dalam 5 detik terakhir
@@ -235,7 +230,7 @@ def on_message(client, userdata, msg):
                     
                     if (now - last_time) > 5:
                         last_processed_returns[process_key] = now
-                        print(f"[Local MQTT] Slot {slot_num} Bike RETURNED. Tag: {tag}. Sending API Return.")
+                        print(f"[{source}] Slot {slot_num} Bike RETURNED. Tag: {tag}. Sending API Return.")
                         # Jalankan Return Bike
                         threading.Thread(target=api_return.return_bike, args=(tag, slot_num), daemon=True).start()
                         
@@ -256,12 +251,94 @@ def on_message(client, userdata, msg):
                         
                         threading.Thread(target=update_visual_status, args=(slot_num,), daemon=True).start()
                     else:
-                        print(f"[Local MQTT] Duplikat terdeteksi untuk Slot {slot_num} Tag {tag}. Mengabaikan.")
+                        print(f"[{source}] Duplikat terdeteksi untuk Slot {slot_num} Tag {tag}. Mengabaikan.")
 
-            print(f"MQTT Update: Slot {slot_num} processed via {msg.topic}")
-
+            print(f"{source} Update: Slot {slot_num} processed via {topic}")
     except Exception as e:
-        print(f"Error processing MQTT message: {e}")
+        print(f"Error in handle_device_event ({source}): {e}")
+
+def on_message(client, userdata, msg):
+    # 1. Abaikan pesan lama (retained) agar tidak memicu pengembalian ganda saat startup/reconnect
+    if msg.retain:
+        print(f"[Local MQTT] Ignoring retained message on topic {msg.topic}")
+        return
+    try:
+        payload_str = msg.payload.decode()
+        data = json.loads(payload_str)
+        handle_device_event(msg.topic, data, source="MQTT")
+    except Exception as e:
+        print(f"Error decoding MQTT message: {e}")
+
+# Serial Global Object
+ser_obj = None
+
+def run_serial():
+    global ser_obj
+    print("[Serial] Thread started...")
+    while True:
+        try:
+            # Re-fetch port from DB in case it changed
+            with app.app_context():
+                db = get_db()
+                port = db.execute("SELECT value FROM settings WHERE key = 'serial_port'").fetchone()
+                mode = db.execute("SELECT value FROM settings WHERE key = 'comm_mode'").fetchone()
+                db.close()
+            
+            if mode and mode['value'] == 'serial' and port:
+                target_port = port['value']
+                if ser_obj is None or ser_obj.port != target_port or not ser_obj.is_open:
+                    if ser_obj and ser_obj.is_open: ser_obj.close()
+                    print(f"[Serial] Connecting to {target_port}...")
+                    ser_obj = serial.Serial(target_port, 115200, timeout=1)
+                    time.sleep(2) # Wait for reset
+                
+                if ser_obj.in_waiting > 0:
+                    line = ser_obj.readline().decode('utf-8', errors='ignore').strip()
+                    if line:
+                        try:
+                            # Serial format from SERIAL_PARSER.md: {"topic":"xxx", "payload":{...}}
+                            envelope = json.loads(line)
+                            topic = envelope.get('topic')
+                            payload = envelope.get('payload')
+                            if topic and isinstance(payload, dict):
+                                handle_device_event(topic, payload, source="SERIAL")
+                        except json.JSONDecodeError:
+                            if "Serial command invalid" not in line:
+                                print(f"[Serial Raw] {line}")
+            else:
+                if ser_obj and ser_obj.is_open:
+                    ser_obj.close()
+                    ser_obj = None
+                time.sleep(5) # Idle if not in serial mode
+        except Exception as e:
+            print(f"[Serial Error] {e}")
+            ser_obj = None
+            time.sleep(5)
+        time.sleep(0.01)
+
+def dispatch_command(topic, payload):
+    """Sends command to device using the configured communication mode."""
+    try:
+        with app.app_context():
+            db = get_db()
+            mode_row = db.execute("SELECT value FROM settings WHERE key = 'comm_mode'").fetchone()
+            mode = mode_row['value'] if mode_row else 'mqtt'
+            db.close()
+        
+        if mode == 'mqtt':
+            publish.single(topic, payload=json.dumps(payload), hostname=MQTT_BROKER, port=MQTT_PORT)
+            print(f"[Dispatch-MQTT] Sent to {topic}")
+        elif mode == 'serial':
+            if ser_obj and ser_obj.is_open:
+                # Wrap in envelope for SERIAL_PARSER.md
+                envelope = {"topic": topic, "payload": payload}
+                msg = json.dumps(envelope) + "\n"
+                ser_obj.write(msg.encode('utf-8'))
+                print(f"[Dispatch-SERIAL] Sent to {topic}")
+            else:
+                print("[Dispatch-SERIAL] FAILED: Serial port not open")
+    except Exception as e:
+        print(f"[Dispatch Error] {e}")
 
 
 def run_mqtt():
@@ -383,7 +460,9 @@ def init_db():
             ("station_address", "Jl. Ir. H. Juanda No.262"),
             ("total_slots", "5"),
             ("auto_shutdown_enabled", "0"),
-            ("auto_shutdown_time", "22:00")
+            ("auto_shutdown_time", "22:00"),
+            ("comm_mode", "mqtt"),
+            ("serial_port", "COM3")
         ]
         
         for key, value in settings_to_seed:
@@ -420,15 +499,15 @@ def handle_remote_mqtt(topic, data):
 
         # 2. IMMEDIATE ACTION: Pemicu Hardware Lokal (Langkah 2) agar solenoid cepat terbuka
         try:
-            local_payload = json.dumps({
+            local_payload = {
                 "slot_number": int(slot_num),
                 "rfid_tag": str(bike_id)
-            })
+            }
             local_topic = f"boseh/status/{slot_num}"
-            publish.single(local_topic, payload=local_payload, hostname=MQTT_BROKER, port=MQTT_PORT)
-            print(f"[Local MQTT] PRIORITY: Triggered {local_topic} for Slot {slot_num}")
+            dispatch_command(local_topic, local_payload)
+            print(f"[Dispatch] PRIORITY: Triggered {local_topic} for Slot {slot_num}")
         except Exception as e:
-            print(f"[Local MQTT] Error priority publish: {e}")
+            print(f"[Dispatch] Error priority publish: {e}")
 
         # 3. IMMEDIATE ACTION: Konfirmasi ke Server Pusat (Langkah 3)
         print(f"[Automation] PRIORITY: Sending Confirm Ready for Bike ID: {bike_id}")
@@ -554,7 +633,10 @@ def admin():
     settings_dict = {s['key']: s['value'] for s in settings}
     api_creds_row = db.execute('SELECT * FROM api_credentials LIMIT 1').fetchone()
     api_creds = dict(api_creds_row) if api_creds_row else {'client_id': '', 'client_secret': ''}
-    return render_template('admin.html', slots=slots, settings=settings_dict, api_creds=api_creds)
+    
+    # Get available serial ports for UI selection (device name and description)
+    available_ports = [{"device": p.device, "description": p.description} for p in serial.tools.list_ports.comports()]
+    return render_template('admin.html', slots=slots, settings=settings_dict, api_creds=api_creds, available_ports=available_ports)
 
 @app.route('/maintenance')
 def maintenance():
@@ -618,15 +700,13 @@ def test_solenoid(slot_id):
     
     if slot:
         slot_num = slot['slot_number']
-        # Publish MQTT command to the device
-        payload = json.dumps({
+        # Topic example: boseh/device/1/control
+        payload = {
             "slot_number": slot_num,
             "command": "solenoid",
             "value": status
-        })
-        # Topic example: boseh/device/1/control
-        publish.single(f"boseh/device/{slot_num}/control", payload=payload, hostname=MQTT_BROKER, port=MQTT_PORT)
-        print(f"Sent Solenoid Command to Slot {slot_num}: {status}")
+        }
+        dispatch_command(f"boseh/device/{slot_num}/control", payload)
         return {"status": "success", "message": f"Command sent to slot {slot_num}"}
     
     return {"status": "error", "message": "Slot not found"}, 404
@@ -668,7 +748,7 @@ def toggle_slot(slot_id):
 def update_settings():
     global last_update_time
     db = get_db()
-    setting_keys = ['running_text', 'station_name', 'station_address', 'total_slots', 'auto_shutdown_enabled', 'auto_shutdown_time']
+    setting_keys = ['running_text', 'station_name', 'station_address', 'total_slots', 'auto_shutdown_enabled', 'auto_shutdown_time', 'comm_mode', 'serial_port']
     
     # Pre-process auto_shutdown_enabled as it's a checkbox usually
     if 'auto_shutdown_enabled' not in request.form:
@@ -741,11 +821,10 @@ def check_device(slot_id):
         slot_num = slot['slot_number']
         initial_update = slot['last_update']
         
-        # Publish MQTT payload {"status": true} to topic boseh/1, boseh/2...
+        # Publish payload {"status": true} to topic boseh/1, boseh/2...
         topic = f"boseh/{slot_num}"
-        payload = json.dumps({"status": True})
-        publish.single(topic, payload=payload, hostname=MQTT_BROKER, port=MQTT_PORT)
-        print(f"Sent Device Check to Topic {topic}: {payload}")
+        payload = {"status": True}
+        dispatch_command(topic, payload)
         
         # Start a 5-second timer to check for response
         threading.Timer(5.0, verify_device_response, [slot_id, initial_update]).start()
@@ -918,6 +997,9 @@ if __name__ == '__main__':
     
     # 1. Local MQTT
     threading.Thread(target=run_mqtt, daemon=True).start()
+
+    # 1b. Local Serial (New Pathway)
+    threading.Thread(target=run_serial, daemon=True).start()
     
     # 2. API Sync
     threading.Thread(target=api_client_station.sync_station_data_from_api, daemon=True).start()

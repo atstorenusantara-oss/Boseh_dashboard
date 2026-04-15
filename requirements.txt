@@ -5,3 +5,4 @@ paho-mqtt
 requests
 pywebview
 pyinstaller
+pyserial
