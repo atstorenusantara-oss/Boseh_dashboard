@@ -12,7 +12,6 @@ import serial
 import serial.tools.list_ports
 from flask import Flask, render_template, request, redirect, url_for, send_file, Response
 from datetime import datetime
-import datetime
 from sub_programPY import api_client_station
 from sub_programPY import mqtt_client_remote
 from sub_programPY import mqtt_client_payment
