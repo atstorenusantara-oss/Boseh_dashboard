@@ -270,47 +270,67 @@ def on_message(client, userdata, msg):
 
 # Serial Global Object
 ser_obj = None
+serial_logs = []
+serial_logs_lock = threading.Lock()
+
+def add_serial_log(message):
+    with serial_logs_lock:
+        timestamp = datetime.now().strftime("%H:%M:%S.%f")[:-3]
+        serial_logs.append(f"[{timestamp}] {message}")
+        if len(serial_logs) > 200:
+            serial_logs.pop(0)
 
 def run_serial():
     global ser_obj
     print("[Serial] Thread started...")
     while True:
         try:
-            # Re-fetch port from DB in case it changed
+            # Re-fetch port and baudrate from DB in case they changed
             with app.app_context():
                 db = get_db()
                 port = db.execute("SELECT value FROM settings WHERE key = 'serial_port'").fetchone()
+                baud = db.execute("SELECT value FROM settings WHERE key = 'serial_baudrate'").fetchone()
                 mode = db.execute("SELECT value FROM settings WHERE key = 'comm_mode'").fetchone()
                 db.close()
             
-            if mode and mode['value'] == 'serial' and port:
-                target_port = port['value']
-                if ser_obj is None or ser_obj.port != target_port or not ser_obj.is_open:
-                    if ser_obj and ser_obj.is_open: ser_obj.close()
-                    print(f"[Serial] Connecting to {target_port}...")
-                    ser_obj = serial.Serial(target_port, 115200, timeout=1)
+            target_port = port['value'] if port else None
+            target_baud = int(baud['value']) if (baud and baud['value']) else 115200
+            
+            if target_port:
+                if ser_obj is None or ser_obj.port != target_port or ser_obj.baudrate != target_baud or not ser_obj.is_open:
+                    if ser_obj and ser_obj.is_open: 
+                        ser_obj.close()
+                    print(f"[Serial] Connecting to {target_port} at {target_baud}...")
+                    add_serial_log(f"SYSTEM: Connecting to {target_port} at {target_baud}...")
+                    ser_obj = serial.Serial(target_port, target_baud, timeout=1)
                     time.sleep(2) # Wait for reset
+                    add_serial_log(f"SYSTEM: Connected to {target_port}")
                 
                 if ser_obj.in_waiting > 0:
                     line = ser_obj.readline().decode('utf-8', errors='ignore').strip()
                     if line:
-                        try:
-                            # Serial format from SERIAL_PARSER.md: {"topic":"xxx", "payload":{...}}
-                            envelope = json.loads(line)
-                            topic = envelope.get('topic')
-                            payload = envelope.get('payload')
-                            if topic and isinstance(payload, dict):
-                                handle_device_event(topic, payload, source="SERIAL")
-                        except json.JSONDecodeError:
-                            if "Serial command invalid" not in line:
-                                print(f"[Serial Raw] {line}")
+                        add_serial_log(f"RX: {line}")
+                        # Process operational events only if comm_mode is serial
+                        if mode and mode['value'] == 'serial':
+                            try:
+                                # Serial format from SERIAL_PARSER.md: {"topic":"xxx", "payload":{...}}
+                                envelope = json.loads(line)
+                                topic = envelope.get('topic')
+                                payload = envelope.get('payload')
+                                if topic and isinstance(payload, dict):
+                                    handle_device_event(topic, payload, source="SERIAL")
+                            except json.JSONDecodeError:
+                                if "Serial command invalid" not in line:
+                                    print(f"[Serial Raw] {line}")
             else:
                 if ser_obj and ser_obj.is_open:
                     ser_obj.close()
                     ser_obj = None
-                time.sleep(5) # Idle if not in serial mode
+                    add_serial_log("SYSTEM: Serial port closed (No port configured).")
+                time.sleep(5) # Idle if no port configured
         except Exception as e:
             print(f"[Serial Error] {e}")
+            add_serial_log(f"SYSTEM ERROR: {e}")
             ser_obj = None
             time.sleep(5)
         time.sleep(0.01)
@@ -333,6 +353,7 @@ def dispatch_command(topic, payload):
                 envelope = {"topic": topic, "payload": payload}
                 msg = json.dumps(envelope) + "\n"
                 ser_obj.write(msg.encode('utf-8'))
+                add_serial_log(f"TX (JSON): {json.dumps(envelope)}")
                 print(f"[Dispatch-SERIAL] Sent to {topic}")
             else:
                 print("[Dispatch-SERIAL] FAILED: Serial port not open")
@@ -461,7 +482,8 @@ def init_db():
             ("auto_shutdown_enabled", "0"),
             ("auto_shutdown_time", "22:00"),
             ("comm_mode", "mqtt"),
-            ("serial_port", "COM3")
+            ("serial_port", "COM3"),
+            ("serial_baudrate", "115200")
         ]
         
         for key, value in settings_to_seed:
@@ -979,6 +1001,73 @@ def get_qris():
     img.save(img_io, 'PNG')
     img_io.seek(0)
     return send_file(img_io, mimetype='image/png')
+
+@app.route('/admin/serial')
+def admin_serial():
+    db = get_db()
+    settings = db.execute('SELECT * FROM settings').fetchall()
+    settings_dict = {s['key']: s['value'] for s in settings}
+    db.close()
+    
+    # Get available serial ports for UI selection (device name and description)
+    available_ports = [{"device": p.device, "description": p.description} for p in serial.tools.list_ports.comports()]
+    return render_template('admin_serial.html', settings=settings_dict, available_ports=available_ports)
+
+@app.route('/admin/serial/stream')
+def serial_stream():
+    def event_stream():
+        # Keep track of the last read index
+        last_idx = len(serial_logs)
+        while True:
+            time.sleep(0.1)
+            if last_idx < len(serial_logs):
+                # Send all new log lines
+                for i in range(last_idx, len(serial_logs)):
+                    yield f"data: {json.dumps(serial_logs[i])}\n\n"
+                last_idx = len(serial_logs)
+    return Response(event_stream(), mimetype="text/event-stream")
+
+@app.route('/api/serial/send', methods=['POST'])
+def api_serial_send():
+    data = request.json or {}
+    cmd = data.get('command', '').strip()
+    if not cmd:
+        return {"status": "error", "message": "Command is empty"}, 400
+        
+    global ser_obj
+    if ser_obj and ser_obj.is_open:
+        try:
+            # Append newline if not present
+            raw_cmd = cmd if cmd.endswith('\n') else (cmd + '\n')
+            ser_obj.write(raw_cmd.encode('utf-8'))
+            add_serial_log(f"TX: {cmd}")
+            return {"status": "success", "message": f"Command sent: {cmd}"}
+        except Exception as e:
+            return {"status": "error", "message": f"Failed to write: {str(e)}"}, 500
+    else:
+        return {"status": "error", "message": "Serial port is not connected"}, 400
+
+@app.route('/api/serial/config', methods=['POST'])
+def api_serial_config():
+    data = request.json or {}
+    port = data.get('serial_port')
+    baud = data.get('serial_baudrate')
+    
+    if port is None or baud is None:
+        return {"status": "error", "message": "Missing port or baudrate"}, 400
+        
+    try:
+        db = get_db()
+        # Ensure setting exists, insert or update
+        db.execute("INSERT OR REPLACE INTO settings (key, value) VALUES ('serial_port', ?)", (port,))
+        db.execute("INSERT OR REPLACE INTO settings (key, value) VALUES ('serial_baudrate', ?)", (str(baud),))
+        db.commit()
+        db.close()
+        
+        add_serial_log(f"SYSTEM: Port updated to {port} and Baudrate to {baud}. Reconnecting...")
+        return {"status": "success", "message": "Configuration updated. Serial port is reconnecting."}
+    except Exception as e:
+        return {"status": "error", "message": str(e)}, 500
 
 import webview
 

@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boseh Admin - Konfigurasi Serial Device</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fira+Code:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-blue: #00aeef;
+            --bg-glass: rgba(255, 255, 255, 0.9);
+            --dark-blue: #0f172a;
+            --terminal-bg: #090d16;
+            --terminal-text: #38bdf8;
+            --accent-green: #10b981;
+            --accent-red: #ef4444;
+        }
+        html, body {
+            height: auto !important;
+            overflow-y: auto !important;
+            font-family: 'Inter', sans-serif;
+        }
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%) !important;
+            min-height: 100vh !important;
+            padding: 20px;
+        }
+        .admin-page {
+            max-width: 1000px;
+            width: 100%;
+            margin: 40px auto;
+            background: var(--bg-glass);
+            backdrop-filter: blur(10px);
+            padding: 2.5rem;
+            border-radius: 30px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+            border: 1px solid rgba(255,255,255,0.5);
+        }
+        .admin-header {
+            margin-bottom: 2rem;
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 1.5rem;
+        }
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            color: #666;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.2s;
+            gap: 8px;
+        }
+        .back-link:hover { color: var(--primary-blue); }
+        
+        .grid-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+        
+        @media (max-width: 900px) {
+            .grid-container {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .config-card {
+            background: rgba(255, 255, 255, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            border-radius: 20px;
+            padding: 1.5rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+            margin-bottom: 1.5rem;
+        }
+        
+        .config-card h3 {
+            margin-top: 0;
+            margin-bottom: 1.2rem;
+            color: #1e293b;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        label {
+            display: block;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: #475569;
+            font-size: 0.85rem;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 0.8rem;
+            border-radius: 12px;
+            border: 1.5px solid #e2e8f0;
+            font-size: 0.95rem;
+            transition: border-color 0.2s;
+            outline: none;
+            background: white;
+            box-sizing: border-box;
+        }
+        input:focus { border-color: var(--primary-blue); }
+        
+        .btn {
+            background: var(--primary-blue);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.2rem;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 4px 12px rgba(0, 174, 239, 0.2);
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(0, 174, 239, 0.3);
+            filter: brightness(1.05);
+        }
+        .btn-success {
+            background: var(--accent-green);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+        }
+        .btn-success:hover {
+            box-shadow: 0 6px 18px rgba(16, 185, 129, 0.3);
+        }
+        .btn-danger {
+            background: var(--accent-red);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
+        }
+        .btn-danger:hover {
+            box-shadow: 0 6px 18px rgba(239, 68, 68, 0.3);
+        }
+        .btn-secondary {
+            background: #475569;
+            box-shadow: 0 4px 12px rgba(71, 85, 105, 0.2);
+        }
+        .btn-secondary:hover {
+            box-shadow: 0 6px 18px rgba(71, 85, 105, 0.3);
+        }
+        
+        .terminal-container {
+            background: var(--terminal-bg);
+            border-radius: 20px;
+            padding: 1.5rem;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.8), 0 15px 35px rgba(0,0,0,0.15);
+            display: flex;
+            flex-direction: column;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        
+        .terminal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 0.8rem;
+            margin-bottom: 1rem;
+        }
+        
+        .terminal-dots {
+            display: flex;
+            gap: 6px;
+        }
+        
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        .dot-red { background: #ff5f56; }
+        .dot-yellow { background: #ffbd2e; }
+        .dot-green { background: #27c93f; }
+        
+        .terminal-title {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.8rem;
+            font-family: 'Fira Code', monospace;
+            font-weight: 500;
+        }
+        
+        .terminal-screen {
+            height: 350px;
+            overflow-y: auto;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.85rem;
+            line-height: 1.5;
+            color: var(--terminal-text);
+            margin-bottom: 1rem;
+            padding-right: 5px;
+        }
+        
+        .terminal-screen::-webkit-scrollbar {
+            width: 6px;
+        }
+        .terminal-screen::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.02);
+        }
+        .terminal-screen::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+        }
+        
+        .terminal-input-wrapper {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .terminal-input {
+            flex: 1;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: white;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9rem;
+            padding: 0.8rem;
+            border-radius: 10px;
+            outline: none;
+            box-sizing: border-box;
+        }
+        .terminal-input:focus {
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 10px rgba(0, 174, 239, 0.2);
+        }
+        
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 0.4rem 0.8rem;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 0.75rem;
+            letter-spacing: 0.5px;
+        }
+        .status-connected {
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--accent-green);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+        .status-disconnected {
+            background: rgba(239, 68, 68, 0.15);
+            color: var(--accent-red);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+        
+        .pulse-led {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        .pulse-led-connected {
+            background-color: var(--accent-green);
+            box-shadow: 0 0 10px var(--accent-green);
+            animation: led-pulse 1.5s infinite;
+        }
+        .pulse-led-disconnected {
+            background-color: var(--accent-red);
+            box-shadow: 0 0 10px var(--accent-red);
+        }
+        
+        @keyframes led-pulse {
+            0% { transform: scale(0.9); opacity: 0.6; }
+            50% { transform: scale(1.1); opacity: 1; box-shadow: 0 0 15px var(--accent-green); }
+            100% { transform: scale(0.9); opacity: 0.6; }
+        }
+        
+        .log-tx { color: #a7f3d0; } /* Mint green for TX */
+        .log-rx { color: #38bdf8; } /* Cyan for RX */
+        .log-sys { color: #e2e8f0; font-style: italic; } /* Gray for system logs */
+        .log-err { color: #fca5a5; font-weight: 700; } /* Red for system errors */
+        
+        .shortcut-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 1.5rem;
+        }
+        
+        .shortcut-group {
+            background: rgba(0,0,0,0.02);
+            border: 1px dashed rgba(0,0,0,0.08);
+            border-radius: 12px;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .shortcut-group-title {
+            font-size: 0.75rem;
+            font-weight: 800;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+        
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            background: #1e293b;
+            color: white;
+            font-weight: 600;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transform: translateY(150%);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 1000;
+        }
+        .toast.show { transform: translateY(0); }
+        .toast-success { border-left: 5px solid var(--accent-green); }
+        .toast-error { border-left: 5px solid var(--accent-red); }
+    </style>
+</head>
+<body>
+    <div class="admin-page">
+        <a href="/admin" class="back-link">
+            <span>&larr;</span> Kembali ke Pengaturan Stasiun
+        </a>
+        
+        <div class="admin-header" style="display: flex; justify-content: space-between; align-items: center; gap: 20px;">
+            <div style="display: flex; gap: 20px; align-items: center;">
+                <img src="{{ url_for('static', filename='img/dishub_logo.png') }}" alt="DISHUB Logo" style="height: 60px;">
+                <div>
+                    <h1 style="color: var(--primary-blue); margin: 0; font-size: 1.8rem;">Console Konfigurasi Serial</h1>
+                    <p style="color: #666; margin: 0; font-size: 0.95rem;">Hubungkan & atur device RFID ESP32 secara interaktif via Serial CLI.</p>
+                </div>
+            </div>
+            <div>
+                <span id="connectionBadge" class="status-badge status-disconnected">
+                    <span id="connectionLed" class="pulse-led pulse-led-disconnected"></span>
+                    <span id="connectionText">DISCONNECTED</span>
+                </span>
+            </div>
+        </div>
+        
+        <div class="grid-container">
+            <!-- PANEL KIRI: SETUP KONEKSI & PINTASAN COMMAND -->
+            <div>
+                <!-- CARD 1: PORT SETUP -->
+                <div class="config-card">
+                    <h3><span>🔌</span> Pengaturan Port Serial</h3>
+                    <div style="display: flex; flex-direction: column; gap: 1rem;">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                            <div>
+                                <label>Pilih Port COM</label>
+                                <select id="serialPort" style="background: white;">
+                                    {% if not available_ports %}
+                                        <option value="{{ settings.serial_port }}">{{ settings.serial_port }} (Disconnected)</option>
+                                    {% endif %}
+                                    {% for port in available_ports %}
+                                        <option value="{{ port.device }}" {% if settings.serial_port == port.device %}selected{% endif %}>{{ port.device }} - {{ port.description }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div>
+                                <label>Baud Rate</label>
+                                <select id="serialBaudrate" style="background: white;">
+                                    <option value="9600" {% if settings.serial_baudrate == '9600' %}selected{% endif %}>9600 bps</option>
+                                    <option value="19200" {% if settings.serial_baudrate == '19200' %}selected{% endif %}>19200 bps</option>
+                                    <option value="38400" {% if settings.serial_baudrate == '38400' %}selected{% endif %}>38400 bps</option>
+                                    <option value="57600" {% if settings.serial_baudrate == '57600' %}selected{% endif %}>57600 bps</option>
+                                    <option value="115200" {% if settings.serial_baudrate == '115200' or not settings.serial_baudrate %}selected{% endif %}>115200 bps (Default)</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div style="display: flex; gap: 10px; margin-top: 5px;">
+                            <button type="button" onclick="updateSerialConfig()" class="btn" style="flex: 1;">
+                                💾 Terapkan Port & Baud
+                            </button>
+                            <button type="button" onclick="location.reload()" class="btn btn-secondary" style="padding: 0.8rem 1rem;">
+                                🔄 Refresh Port
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- CARD 2: SHORTCUT COMMANDS -->
+                <div class="config-card">
+                    <h3><span>⚡</span> Pintasan Cepat (CLI Shortcuts)</h3>
+                    
+                    <!-- SYSTEM SECTION -->
+                    <div class="shortcut-group">
+                        <div class="shortcut-group-title">Sistem & Memori</div>
+                        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                            <button type="button" onclick="sendShortcut('HELP')" class="btn btn-secondary" style="padding: 0.5rem 0.8rem; font-size: 0.8rem;">HELP</button>
+                            <button type="button" onclick="sendShortcut('GET CONFIG')" class="btn" style="padding: 0.5rem 0.8rem; font-size: 0.8rem;">GET CONFIG</button>
+                            <button type="button" onclick="sendShortcut('SAVE')" class="btn btn-success" style="padding: 0.5rem 0.8rem; font-size: 0.8rem;">SAVE</button>
+                            <button type="button" onclick="sendShortcut('REBOOT')" class="btn btn-danger" style="padding: 0.5rem 0.8rem; font-size: 0.8rem;">REBOOT</button>
+                        </div>
+                    </div>
+
+                    <!-- ROLE SECTION -->
+                    <div class="shortcut-group">
+                        <div class="shortcut-group-title">Ubah Peran Perangkat</div>
+                        <div style="display: flex; gap: 8px;">
+                            <button type="button" onclick="sendShortcut('SET ROLE NODE')" class="btn" style="flex: 1; padding: 0.5rem 0.8rem; font-size: 0.8rem; background: #6366f1;">SET ROLE NODE</button>
+                            <button type="button" onclick="sendShortcut('SET ROLE GATEWAY')" class="btn" style="flex: 1; padding: 0.5rem 0.8rem; font-size: 0.8rem; background: #8b5cf6;">SET ROLE GATEWAY</button>
+                        </div>
+                    </div>
+
+                    <!-- PARAMETERS SECTION -->
+                    <div class="shortcut-group">
+                        <div class="shortcut-group-title">Parameter Device</div>
+                        
+                        <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 5px;">
+                            <!-- SLOT -->
+                            <div style="display: flex; gap: 10px; align-items: center;">
+                                <label style="margin: 0; width: 80px; font-size: 0.8rem;">Slot ID (1-64):</label>
+                                <input type="number" id="paramSlot" min="1" max="64" placeholder="3" style="flex: 1; padding: 0.5rem;">
+                                <button type="button" onclick="setParamSlot()" class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.8rem;">Set</button>
+                            </div>
+                            
+                            <!-- GATEWAY MAC -->
+                            <div style="display: flex; gap: 10px; align-items: center;">
+                                <label style="margin: 0; width: 80px; font-size: 0.8rem;">GW MAC:</label>
+                                <input type="text" id="paramMac" placeholder="24:6F:28:AA:BB:CC" style="flex: 1; padding: 0.5rem; font-family: monospace;">
+                                <button type="button" onclick="setParamMac()" class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.8rem;">Set</button>
+                            </div>
+                            
+                            <!-- RELAY ACTIVATION -->
+                            <div style="display: flex; gap: 10px; align-items: center; border-top: 1px solid rgba(0,0,0,0.05); padding-top: 10px; margin-top: 5px;">
+                                <label style="margin: 0; width: 80px; font-size: 0.8rem;">Relay Logic:</label>
+                                <select id="paramRelayPin" style="flex: 1; padding: 0.5rem;">
+                                    <option value="2">Relay 2 (GPIO 2)</option>
+                                    <option value="4">Relay 4 (GPIO 4)</option>
+                                    <option value="22">Relay 22 (GPIO 22)</option>
+                                </select>
+                                <select id="paramRelayVal" style="width: 80px; padding: 0.5rem;">
+                                    <option value="HIGH">HIGH</option>
+                                    <option value="LOW">LOW</option>
+                                </select>
+                                <button type="button" onclick="setParamRelay()" class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.8rem;">Set</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- PANEL KANAN: TERMINAL CONSOLE -->
+            <div class="terminal-container">
+                <div class="terminal-header">
+                    <div class="terminal-dots">
+                        <span class="dot dot-red"></span>
+                        <span class="dot dot-yellow"></span>
+                        <span class="dot dot-green"></span>
+                    </div>
+                    <div class="terminal-title">cli_console@esp32_firmware</div>
+                    <div>
+                        <button type="button" onclick="clearTerminal()" style="background: none; border: none; color: rgba(255,255,255,0.4); cursor: pointer; font-size: 0.75rem; font-family: 'Fira Code', monospace;">[Clear Screen]</button>
+                    </div>
+                </div>
+                
+                <div id="terminalScreen" class="terminal-screen">
+                    <div class="log-sys">-- Membuka konsol serial... --</div>
+                </div>
+                
+                <div class="terminal-input-wrapper">
+                    <input type="text" id="terminalInput" class="terminal-input" placeholder="Ketik perintah di sini... (cth: GET CONFIG)" autocomplete="off">
+                    <button type="button" onclick="sendCommand()" class="btn btn-success" style="padding: 0 1.5rem;">
+                        Kirim
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- TOAST NOTIFICATION -->
+    <div id="toast" class="toast">
+        <span id="toastIcon">ℹ️</span>
+        <span id="toastMsg">Notification message</span>
+    </div>
+    
+    <script>
+        const terminalScreen = document.getElementById('terminalScreen');
+        const terminalInput = document.getElementById('terminalInput');
+        const badge = document.getElementById('connectionBadge');
+        const led = document.getElementById('connectionLed');
+        const txt = document.getElementById('connectionText');
+        
+        let sseSource = null;
+        
+        // Show notification toast
+        function showToast(msg, type = 'success') {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toastMsg');
+            const toastIcon = document.getElementById('toastIcon');
+            
+            toastMsg.innerText = msg;
+            toastIcon.innerText = type === 'success' ? '✅' : '❌';
+            
+            toast.className = `toast show toast-${type}`;
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+        
+        // Clear terminal screen
+        function clearTerminal() {
+            terminalScreen.innerHTML = '<div class="log-sys">-- Layar dibersihkan --</div>';
+        }
+        
+        // Add log entry to terminal
+        function logToTerminal(message) {
+            const row = document.createElement('div');
+            
+            if (message.includes('TX:')) {
+                row.className = 'log-tx';
+            } else if (message.includes('RX:')) {
+                row.className = 'log-rx';
+                // Automatically update UI connection badge based on ESP32 raw output
+                updateConnectionState(true);
+            } else if (message.includes('SYSTEM ERROR:')) {
+                row.className = 'log-err';
+                updateConnectionState(false);
+            } else {
+                row.className = 'log-sys';
+            }
+            
+            row.textContent = message;
+            terminalScreen.appendChild(row);
+            
+            // Auto scroll to bottom
+            terminalScreen.scrollTop = terminalScreen.scrollHeight;
+        }
+        
+        // Update the LED connectivity badge
+        function updateConnectionState(isConnected) {
+            if (isConnected) {
+                badge.className = 'status-badge status-connected';
+                led.className = 'pulse-led pulse-led-connected';
+                txt.textContent = 'CONNECTED';
+            } else {
+                badge.className = 'status-badge status-disconnected';
+                led.className = 'pulse-led pulse-led-disconnected';
+                txt.textContent = 'DISCONNECTED';
+            }
+        }
+        
+        // SSE Connection to listen for background serial updates
+        function initSseConnection() {
+            if (sseSource) {
+                sseSource.close();
+            }
+            
+            sseSource = new EventSource('/admin/serial/stream');
+            
+            sseSource.onmessage = function(event) {
+                try {
+                    const message = JSON.parse(event.data);
+                    logToTerminal(message);
+                } catch (e) {
+                    console.error('Error parsing SSE data:', e);
+                }
+            };
+            
+            sseSource.onerror = function(event) {
+                console.error('SSE Stream error. Reconnecting...');
+                updateConnectionState(false);
+            };
+        }
+        
+        // Update database and reconnect serial port
+        function updateSerialConfig() {
+            const port = document.getElementById('serialPort').value;
+            const baud = document.getElementById('serialBaudrate').value;
+            
+            fetch('/api/serial/config', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ serial_port: port, serial_baudrate: baud })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    showToast(data.message, 'success');
+                } else {
+                    showToast(data.message, 'error');
+                }
+            })
+            .catch(err => {
+                showToast('Gagal memperbarui konfigurasi serial', 'error');
+            });
+        }
+        
+        // Send a direct command over Serial
+        function executeCommand(rawCommand) {
+            if (!rawCommand.trim()) return;
+            
+            fetch('/api/serial/send', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ command: rawCommand })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.status !== 'success') {
+                    showToast(data.message, 'error');
+                }
+            })
+            .catch(err => {
+                showToast('Gagal mengirim perintah', 'error');
+            });
+        }
+        
+        // Textbox send action
+        function sendCommand() {
+            const cmd = terminalInput.value;
+            if (cmd) {
+                executeCommand(cmd);
+                terminalInput.value = '';
+            }
+        }
+        
+        // Bind enter key to input box
+        terminalInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendCommand();
+            }
+        });
+        
+        // Shortcut execution helper
+        function sendShortcut(cmd) {
+            executeCommand(cmd);
+        }
+        
+        // Specific Shortcut Forms
+        function setParamSlot() {
+            const slot = document.getElementById('paramSlot').value;
+            if (!slot || slot < 1 || slot > 64) {
+                showToast('Slot harus berada dalam rentang 1 - 64!', 'error');
+                return;
+            }
+            executeCommand(`SET SLOT ${slot}`);
+        }
+        
+        function setParamMac() {
+            const mac = document.getElementById('paramMac').value.trim();
+            const macRegex = /^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$/;
+            if (!macRegex.test(mac)) {
+                showToast('Format MAC Address salah! Gunakan format XX:XX:XX:XX:XX:XX', 'error');
+                return;
+            }
+            executeCommand(`SET GATEWAY_MAC ${mac}`);
+        }
+        
+        function setParamRelay() {
+            const pin = document.getElementById('paramRelayPin').value;
+            const val = document.getElementById('paramRelayVal').value;
+            executeCommand(`SET RELAY${pin}_ACTIVE ${val}`);
+        }
+        
+        // Initialize on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            initSseConnection();
+            
+            // Check status of current port configuration
+            setTimeout(() => {
+                // If there are RX messages, status will automatically light up.
+                // We do a small healthcheck to set initial indicator state.
+                const isConfigured = "{{ settings.serial_port }}".trim() !== "";
+                updateConnectionState(isConfigured);
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
