@@ -18,32 +18,31 @@ echo  [INFO] Folder: %PROJECT_DIR%
 echo.
 
 :: ============================================================
-:: JALANKAN / CEK MOSQUITTO MQTT BROKER
+:: JALANKAN / CEK MOSQUITTO MQTT BROKER (DINONAKTIFKAN - MODE SERIAL AKTIF)
 :: ============================================================
-echo  [1/3] Mengecek Mosquitto MQTT Broker...
-
-sc query mosquitto >nul 2>&1
-if %errorlevel% equ 0 (
-    :: Cek apakah service sudah running
-    sc query mosquitto | find "RUNNING" >nul 2>&1
-    if %errorlevel% neq 0 (
-        echo  [INFO] Memulai Mosquitto Service...
-        net start mosquitto >nul 2>&1
-        timeout /t 2 /nobreak >nul
-    )
-    echo  [OK] Mosquitto MQTT Broker berjalan
-) else (
-    :: Coba jalankan mosquitto langsung (portable / tidak sebagai service)
-    tasklist | find /i "mosquitto.exe" >nul 2>&1
-    if %errorlevel% neq 0 (
-        echo  [INFO] Mencoba jalankan mosquitto.exe langsung...
-        start /min "" mosquitto
-        timeout /t 2 /nobreak >nul
-        echo  [OK] Mosquitto dijalankan
-    ) else (
-        echo  [OK] Mosquitto sudah berjalan
-    )
-)
+echo  [1/3] Mengecek Mosquitto MQTT Broker (Diabaikan - Mode Serial)...
+:: sc query mosquitto >nul 2>&1
+:: if %errorlevel% equ 0 (
+::     :: Cek apakah service sudah running
+::     sc query mosquitto | find "RUNNING" >nul 2>&1
+::     if %errorlevel% neq 0 (
+::         echo  [INFO] Memulai Mosquitto Service...
+::         net start mosquitto >nul 2>&1
+::         timeout /t 2 /nobreak >nul
+::     )
+::     echo  [OK] Mosquitto MQTT Broker berjalan
+:: ) else (
+::     :: Coba jalankan mosquitto langsung (portable / tidak sebagai service)
+::     tasklist | find /i "mosquitto.exe" >nul 2>&1
+::     if %errorlevel% neq 0 (
+::         echo  [INFO] Mencoba jalankan mosquitto.exe langsung...
+::         start /min "" mosquitto
+::         timeout /t 2 /nobreak >nul
+::         echo  [OK] Mosquitto dijalankan
+::     ) else (
+::         echo  [OK] Mosquitto sudah berjalan
+::     )
+:: )
 
 :: ============================================================
 :: JALANKAN FLASK SERVER

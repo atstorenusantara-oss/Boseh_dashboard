@@ -6,8 +6,7 @@ import io
 import time
 import json
 import threading
-import paho.mqtt.client as mqtt
-import paho.mqtt.publish as publish
+# paho.mqtt.client and publish removed for local MQTT
 import serial
 import serial.tools.list_ports
 from flask import Flask, render_template, request, redirect, url_for, send_file, Response
@@ -46,10 +45,7 @@ else:
 DATABASE = 'boseh.db'
 
 
-# MQTT Constants
-MQTT_BROKER = "localhost" # Menggunakan Mosquitto Lokal
-MQTT_PORT = 1883
-MQTT_TOPIC = "boseh/stasiun/confirm_open"
+# Local MQTT constants removed
 
 # Simple broadcast mechanism
 latest_event_time = time.time()
@@ -150,13 +146,8 @@ last_api_status = False
 last_api_message = "Initializing..."
 
 # ---------------------------------------------------------
-# MQTT CLIENT OVERVIEW
+# DEVICE EVENTS HANDLER
 # ---------------------------------------------------------
-def on_connect(client, userdata, flags, rc):
-    print(f"Connected to MQTT Broker with result code {rc}")
-    client.subscribe(MQTT_TOPIC)
-    client.subscribe("boseh/ready")
-    client.subscribe("boseh/maintenance")
 
 # Global tracker to prevent duplicate API calls for the same tag within a short time window
 last_processed_returns = {} # Format: {f"{slot_num}_{tag}": timestamp}
@@ -256,17 +247,7 @@ def handle_device_event(topic, data, source="MQTT"):
     except Exception as e:
         print(f"Error in handle_device_event ({source}): {e}")
 
-def on_message(client, userdata, msg):
-    # 1. Abaikan pesan lama (retained) agar tidak memicu pengembalian ganda saat startup/reconnect
-    if msg.retain:
-        print(f"[Local MQTT] Ignoring retained message on topic {msg.topic}")
-        return
-    try:
-        payload_str = msg.payload.decode()
-        data = json.loads(payload_str)
-        handle_device_event(msg.topic, data, source="MQTT")
-    except Exception as e:
-        print(f"Error decoding MQTT message: {e}")
+
 
 # Serial Global Object
 ser_obj = None
@@ -290,7 +271,6 @@ def run_serial():
                 db = get_db()
                 port = db.execute("SELECT value FROM settings WHERE key = 'serial_port'").fetchone()
                 baud = db.execute("SELECT value FROM settings WHERE key = 'serial_baudrate'").fetchone()
-                mode = db.execute("SELECT value FROM settings WHERE key = 'comm_mode'").fetchone()
                 db.close()
             
             target_port = port['value'] if port else None
@@ -310,18 +290,17 @@ def run_serial():
                     line = ser_obj.readline().decode('utf-8', errors='ignore').strip()
                     if line:
                         add_serial_log(f"RX: {line}")
-                        # Process operational events only if comm_mode is serial
-                        if mode and mode['value'] == 'serial':
-                            try:
-                                # Serial format from SERIAL_PARSER.md: {"topic":"xxx", "payload":{...}}
-                                envelope = json.loads(line)
-                                topic = envelope.get('topic')
-                                payload = envelope.get('payload')
-                                if topic and isinstance(payload, dict):
-                                    handle_device_event(topic, payload, source="SERIAL")
-                            except json.JSONDecodeError:
-                                if "Serial command invalid" not in line:
-                                    print(f"[Serial Raw] {line}")
+                        # Process operational events directly from Serial
+                        try:
+                            # Serial format from SERIAL_PARSER.md: {"topic":"xxx", "payload":{...}}
+                            envelope = json.loads(line)
+                            topic = envelope.get('topic')
+                            payload = envelope.get('payload')
+                            if topic and isinstance(payload, dict):
+                                handle_device_event(topic, payload, source="SERIAL")
+                        except json.JSONDecodeError:
+                            if "Serial command invalid" not in line:
+                                print(f"[Serial Raw] {line}")
             else:
                 if ser_obj and ser_obj.is_open:
                     ser_obj.close()
@@ -336,41 +315,20 @@ def run_serial():
         time.sleep(0.01)
 
 def dispatch_command(topic, payload):
-    """Sends command to device using the configured communication mode."""
+    """Sends command to device directly using Serial communication."""
     try:
-        with app.app_context():
-            db = get_db()
-            mode_row = db.execute("SELECT value FROM settings WHERE key = 'comm_mode'").fetchone()
-            mode = mode_row['value'] if mode_row else 'mqtt'
-            db.close()
-        
-        if mode == 'mqtt':
-            publish.single(topic, payload=json.dumps(payload), hostname=MQTT_BROKER, port=MQTT_PORT)
-            print(f"[Dispatch-MQTT] Sent to {topic}")
-        elif mode == 'serial':
-            if ser_obj and ser_obj.is_open:
-                # Wrap in envelope for SERIAL_PARSER.md
-                envelope = {"topic": topic, "payload": payload}
-                msg = json.dumps(envelope) + "\n"
-                ser_obj.write(msg.encode('utf-8'))
-                add_serial_log(f"TX (JSON): {json.dumps(envelope)}")
-                print(f"[Dispatch-SERIAL] Sent to {topic}")
-            else:
-                print("[Dispatch-SERIAL] FAILED: Serial port not open")
+        global ser_obj
+        if ser_obj and ser_obj.is_open:
+            # Wrap in envelope for SERIAL_PARSER.md
+            envelope = {"topic": topic, "payload": payload}
+            msg = json.dumps(envelope) + "\n"
+            ser_obj.write(msg.encode('utf-8'))
+            add_serial_log(f"TX (JSON): {json.dumps(envelope)}")
+            print(f"[Dispatch-SERIAL] Sent to {topic}")
+        else:
+            print("[Dispatch-SERIAL] FAILED: Serial port not open")
     except Exception as e:
         print(f"[Dispatch Error] {e}")
-
-
-def run_mqtt():
-    client = mqtt.Client()
-    client.on_connect = on_connect
-    client.on_message = on_message
-    
-    try:
-        client.connect(MQTT_BROKER, MQTT_PORT, 60)
-        client.loop_forever()
-    except Exception as e:
-        print(f"MQTT Connection Error: {e}")
 
 # Threads will be started at the bottom of the file inside the main block
 # ---------------------------------------------------------
@@ -481,7 +439,7 @@ def init_db():
             ("total_slots", "5"),
             ("auto_shutdown_enabled", "0"),
             ("auto_shutdown_time", "22:00"),
-            ("comm_mode", "mqtt"),
+            ("comm_mode", "serial"),
             ("serial_port", "COM3"),
             ("serial_baudrate", "115200")
         ]
@@ -490,6 +448,9 @@ def init_db():
             cursor = db.execute('SELECT COUNT(*) FROM settings WHERE key = ?', (key,))
             if cursor.fetchone()[0] == 0:
                 db.execute('INSERT INTO settings (key, value) VALUES (?, ?)', (key, value))
+        
+        # Force migration of comm_mode to serial
+        db.execute("UPDATE settings SET value = 'serial' WHERE key = 'comm_mode'")
         
         # Seed initial api credentials if they don't exist
         cursor = db.execute('SELECT COUNT(*) FROM api_credentials')
@@ -1069,10 +1030,9 @@ def api_serial_config():
     except Exception as e:
         return {"status": "error", "message": str(e)}, 500
 
-import webview
-
 def run_flask():
-    app.run(host='127.0.0.1', port=5000, debug=False, use_reloader=False)
+    host = os.environ.get('FLASK_HOST', '127.0.0.1')
+    app.run(host=host, port=5000, debug=False, use_reloader=False)
 
 
 if __name__ == '__main__':
@@ -1083,10 +1043,7 @@ if __name__ == '__main__':
     # Start all background threads
     print("Starting background service threads...")
     
-    # 1. Local MQTT
-    threading.Thread(target=run_mqtt, daemon=True).start()
-
-    # 1b. Local Serial (New Pathway)
+    # 1. Local Serial (Main Communication Pathway)
     threading.Thread(target=run_serial, daemon=True).start()
     
     # 2. API Sync
@@ -1107,15 +1064,29 @@ if __name__ == '__main__':
     # 6. Automatic Token Refresh (Every 5 Minutes)
     threading.Thread(target=api_client_station.api_token_refresh_loop, daemon=True).start()
 
-    # 7. Start Flask Server in a thread
-    t = threading.Thread(target=run_flask)
-    t.daemon = True
-    t.start()
+    # 7. Start Flask Server based on GUI Mode
+    gui_mode = os.environ.get('GUI_MODE', 'webview').lower()
+    
+    if gui_mode in ['server', 'headless']:
+        print("Running in headless server mode (Flask main thread)...")
+        host = os.environ.get('FLASK_HOST', '0.0.0.0')
+        app.run(host=host, port=5000, debug=False, use_reloader=False)
+    else:
+        try:
+            import webview
+            t = threading.Thread(target=run_flask)
+            t.daemon = True
+            t.start()
 
-    # 8. Start Webview window (Kiosk Mode: Fullscreen & Frameless)
-    print("Launching Desktop UI in Fullscreen...")
-    webview.create_window('Boseh Dashboard V2', 'http://127.0.0.1:5000', 
-                          fullscreen=True)
-    webview.start()
+            # 8. Start Webview window (Kiosk Mode: Fullscreen & Frameless)
+            print("Launching Desktop UI in Fullscreen...")
+            webview.create_window('Boseh Dashboard V2', 'http://127.0.0.1:5000', 
+                                  fullscreen=True)
+            webview.start()
+        except Exception as e:
+            print(f"Error launching webview: {e}")
+            print("Falling back to server mode on main thread...")
+            host = os.environ.get('FLASK_HOST', '0.0.0.0')
+            app.run(host=host, port=5000, debug=False, use_reloader=False)
 
 

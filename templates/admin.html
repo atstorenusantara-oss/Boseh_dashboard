@@ -157,10 +157,8 @@
                     
                     <div style="margin-bottom: 1rem;">
                         <label style="display: block; font-weight: 700; margin-bottom: 0.5rem; color: #555; font-size: 0.8rem;">Mode Jalur Utama</label>
-                        <select name="comm_mode" style="background: white;">
-                            <option value="mqtt" {% if settings.comm_mode == 'mqtt' %}selected{% endif %}>Local MQTT (Mosquitto)</option>
-                            <option value="serial" {% if settings.comm_mode == 'serial' %}selected{% endif %}>Serial USB (ESP32 Gateway)</option>
-                        </select>
+                        <input type="text" value="Serial USB (ESP32 Gateway)" readonly style="background: #e2e8f0; color: #4a5568; font-weight: 600; cursor: not-allowed;">
+                        <input type="hidden" name="comm_mode" value="serial">
                     </div>
 
                     <div>

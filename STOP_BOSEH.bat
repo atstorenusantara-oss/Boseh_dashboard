@@ -18,14 +18,14 @@ if %errorlevel% equ 0 (
 )
 
 echo.
-echo  [2/2] Menghentikan Mosquitto...
-net stop mosquitto >nul 2>&1
-if %errorlevel% equ 0 (
-    echo  [OK] Mosquitto dihentikan
-) else (
-    taskkill /f /im mosquitto.exe >nul 2>&1
-    echo  [OK] Mosquitto process dihentikan
-)
+echo  [2/2] Menghentikan Mosquitto (Diabaikan)...
+:: net stop mosquitto >nul 2>&1
+:: if %errorlevel% equ 0 (
+::     echo  [OK] Mosquitto dihentikan
+:: ) else (
+::     taskkill /f /im mosquitto.exe >nul 2>&1
+::     echo  [OK] Mosquitto process dihentikan
+:: )
 
 echo.
 echo  =============================================

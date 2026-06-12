@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  boseh-backend:
+    build: .
+    container_name: boseh-backend
+    restart: always
+    ports:
+      - "5000:5000"
+    volumes:
+      # Persist the sqlite database and activity log files on the host
+      - ./boseh.db:/app/boseh.db
+      - ./boseh.log:/app/boseh.log
+    devices:
+      # Map the USB serial port of the ESP32 Gateway to the container.
+      # Note: Change /dev/ttyUSB0 if your device is on a different port (e.g., /dev/ttyACM0).
+      # If the device is not plugged in, Docker will fail to start the container unless this is commented out.
+      - "/dev/ttyUSB0:/dev/ttyUSB0"
+    environment:
+      - GUI_MODE=server
+      - FLASK_HOST=0.0.0.0
+      - TZ=Asia/Jakarta
