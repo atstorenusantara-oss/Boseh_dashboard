@@ -4,9 +4,10 @@ FROM python:3.11-slim
 # Set work directory
 WORKDIR /app
 
-# Install system dependencies (e.g., build-essential, git if needed)
+# Install system dependencies (e.g., build-essential, dbus for host shutdown)
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
+    dbus \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy only requirements first to leverage Docker cache

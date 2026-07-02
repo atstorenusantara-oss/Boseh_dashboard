@@ -11,6 +11,7 @@ services:
       # Persist the sqlite database and activity log files on the host
       - ./boseh.db:/app/boseh.db
       - ./boseh.log:/app/boseh.log
+      - /var/run/dbus/system_bus_socket:/var/run/dbus/system_bus_socket
     devices:
       # Map the USB serial port of the ESP32 Gateway to the container.
       # Note: Change /dev/ttyUSB0 if your device is on a different port (e.g., /dev/ttyACM0).

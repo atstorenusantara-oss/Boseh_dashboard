@@ -94,20 +94,32 @@ def log_event(category, message, level="INFO"):
         threading.Thread(target=record_to_db, daemon=True).start()
     except: pass
 
+def shutdown_pc(delay_seconds=30):
+    if sys.platform.startswith('win'):
+        os.system(f"shutdown /s /t {delay_seconds}")
+    else:
+        # Check if running inside Docker container
+        if os.path.exists('/.dockerenv'):
+            # Trigger host shutdown via DBus (requires dbus package and system_bus_socket volume mapping)
+            os.system("dbus-send --system --print-reply --dest=org.freedesktop.login1 /org/freedesktop/login1 org.freedesktop.login1.Manager.PowerOff boolean:true")
+        else:
+            os.system("sudo poweroff")
+
 @app.route('/api/shutdown', methods=['POST'])
 def manual_shutdown():
     log_event("SYSTEM", "Manual shutdown triggered from Admin Panel", "WARNING")
-    # Shutdown command for Windows
-    os.system("shutdown /s /t 5")
-    return {"status": "success", "message": "PC will shutdown in 5 seconds"}
+    shutdown_pc(5)
+    return {"status": "success", "message": "PC will shutdown shortly"}
 
 @app.route('/api/keyboard', methods=['POST'])
 def open_keyboard():
     log_event("SYSTEM", "Virtual keyboard requested")
     try:
-        # Menjalankan keyboard virtual Windows. 
-        # Menggunakan 'start' agar proses tidak memblokir Flask
-        os.system("start osk")
+        # Menjalankan keyboard virtual (Windows / Linux)
+        if sys.platform.startswith('win'):
+            os.system("start osk")
+        else:
+            os.system("onboard &")
         return {"status": "success", "message": "Keyboard virtual dibuka"}
     except Exception as e:
         return {"status": "error", "message": str(e)}, 500
@@ -133,7 +145,7 @@ def auto_shutdown_loop():
                 if current_time == target['value']:
                     log_event("SYSTEM", f"Auto Shutdown triggered at {current_time}", "WARNING")
                     print(f"[Auto Shutdown] Triggering system shutdown at {current_time}")
-                    os.system("shutdown /s /t 30") # 30 seconds delay
+                    shutdown_pc(30)
                     time.sleep(120) # Wait to avoid repeated trigger during the same minute
             
         except Exception as e:
